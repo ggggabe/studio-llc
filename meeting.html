@@ -277,7 +277,8 @@
   nav .nav-part-btn span { display: block; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
   nav .nav-part-btn:hover { background: var(--blue-soft); }
   nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
+  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; text-decoration: none; }
+  nav .nav-back:hover { text-decoration: underline; }
   nav .nav-back::before { content: "\2039\00a0"; }
   .landing header .objectives { margin-bottom: 8px; }
   .landing header .parts-index { margin: 44px 0 48px; max-width: 72ch; display: grid; gap: 14px; }
@@ -310,7 +311,7 @@
     <button type="button" class="nav-part-btn" data-go="founding"><b>Founding</b><span>How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies.</span></button>
   </div>
   <div class="nav-part" data-part="founding">
-    <button type="button" class="nav-back" data-go="root">All parts</button>
+    <a class="nav-back" href="index.html">Home</a>
     <h1>Founding</h1>
   <details open><summary><a href="#meeting"><span class="n">1</span>Partner meeting</a></summary>
     <a class="sub" href="#meeting-must-decide-at-the-meeting">Must decide at the meeting</a>

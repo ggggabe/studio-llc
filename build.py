@@ -83,7 +83,7 @@ def nav_for(current):
     if current:
         title = next(t for k, _, t, _ in PARTS if k == current)
         pane = (f'  <div class="nav-part" data-part="{current}">\n'
-                f'    <button type="button" class="nav-back" data-go="root">All parts</button>\n'
+                f'    <a class="nav-back" href="index.html">Home</a>\n'
                 f'    <h1>{title}</h1>\n{panes[current]}  </div>\n')
     level = current or 'root'
     return (f'<nav id="siteNav" tabindex="-1" aria-label="Contents" data-level="{level}" data-home="{level}">\n'
@@ -101,7 +101,8 @@ EXTRA_CSS = '''  nav .nav-root, nav .nav-part { display: none; }
   nav .nav-part-btn span { display: block; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
   nav .nav-part-btn:hover { background: var(--blue-soft); }
   nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
+  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; text-decoration: none; }
+  nav .nav-back:hover { text-decoration: underline; }
   nav .nav-back::before { content: "\\2039\\00a0"; }
   .landing header .objectives { margin-bottom: 8px; }
   .landing header .parts-index { margin: 44px 0 48px; max-width: 72ch; display: grid; gap: 14px; }
