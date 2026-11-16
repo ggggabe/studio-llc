@@ -46,11 +46,13 @@ PART_BODIES = {'agreement': agreement_body, 'ops': ops_body, 'founding': foundin
 parts_index = '  <div class="parts-index">\n'
 for n, (key, f, t, d) in enumerate(PARTS, start=1):
     secs, mins = stats(PART_BODIES[key])
+    pledge = '<span class="part-pledge">Every word in here needs to be something we all agree to.</span>' if key == 'agreement' else ''
     parts_index += (f'    <a class="part-card" href="{f}">\n      <span class="part-num">{n}</span>\n'
-                    f'      <span class="part-body"><span class="part-title">{t}</span><span class="part-desc">{d}</span>'
+                    f'      <span class="part-body"><span class="part-title">{t}</span><span class="part-desc">{d}</span>{pledge}'
                     f'<span class="part-meta">{secs} sections, about {mins} minutes</span></span>\n    </a>\n')
 parts_index += '  </div>\n'
 landing_header = landing_header.replace('<h1>The Agreement Manual</h1>', '<h1>The studio as a company</h1>', 1)
+landing_header = landing_header.replace('  <p class="pledge">Every word in here needs to be something we all agree to.</p>\n', '', 1)
 landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
 # agreement page header: title + description only
@@ -107,6 +109,8 @@ EXTRA_CSS = '''  nav .nav-root, nav .nav-part { display: none; }
   .landing .part-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-top: 4px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 14px; font-weight: 700; }
   .landing .part-title { display: block; font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin: 0 0 8px; }
   .landing .part-desc { display: block; font-size: 17px; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+  .landing .part-pledge { display: block; margin-top: 10px; font-size: 17px; font-weight: 700; color: #E8650A; }
+  @media (prefers-color-scheme: dark) { .landing .part-pledge { color: #FF8A3D; } }
   .landing .part-meta { display: block; margin-top: 12px; font-size: 14px; font-weight: 400; color: var(--ink-3); }
   @media (max-width: 900px) { .landing .part-card { grid-template-columns: 1fr; gap: 10px; padding: 18px 18px; } .landing .part-num { margin-top: 0; } .landing .part-title { font-size: 22px; } }
   @media (max-width: 900px) { nav .nav-part-btn b { font-size: 16px; } nav .nav-part-btn span { font-size: 14px; } }
