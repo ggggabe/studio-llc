@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio operating manual</title>
+<style>
+  :root {
+    --paper: #F4F5F0; --paper-2: #EAECE5; --ink: #141518; --ink-2: #4B4F57; --ink-3: #8A8E97;
+    --rule: #D9DBD3; --blue: #2B4BFF; --blue-soft: #E3E8FF; --green: #1D7A4E; --green-soft: #DDF1E6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper: #121316; --paper-2: #1B1D21; --ink: #ECEDE8; --ink-2: #B4B7BE; --ink-3: #7C8089;
+            --rule: #2A2D33; --blue: #7B90FF; --blue-soft: #1E2550; --green: #5CC68E; --green-soft: #15311F; }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+         font-family: "Avenir Next", "Avenir", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+  b { font-weight: 600; }
+
+  .wrap { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+
+  nav { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 40px 20px 40px 28px; border-right: 1px solid var(--rule); background: var(--paper); }
+  nav h1 { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 10px; letter-spacing: 0; }
+  nav details { margin: 0 0 6px; }
+  nav summary { list-style: none; cursor: default; }
+  nav summary::-webkit-details-marker { display: none; }
+  nav a { display: block; color: var(--ink); font-size: 14px; line-height: 1.35; padding: 5px 8px; border-radius: 6px; }
+  nav a:hover { text-decoration: none; background: var(--paper-2); }
+  nav summary a { font-weight: 600; }
+  nav summary a.current { background: var(--blue-soft); color: var(--blue); }
+  nav a .n { display: inline-block; min-width: 22px; color: var(--blue); font-weight: 600; font-variant-numeric: tabular-nums; }
+  nav a.sub { position: relative; font-size: 13px; font-weight: 400; color: var(--ink-2); padding: 3px 8px 3px 30px; border-radius: 6px;
+              transition: color .18s ease, background-color .18s ease, transform .18s ease; }
+  nav a.sub::before { content: ""; position: absolute; left: 18px; top: 6px; bottom: 6px; width: 2px; border-radius: 2px; background: var(--blue); opacity: 0;
+                      transform: scaleY(.3); transition: opacity .18s ease, transform .22s ease; }
+  nav a.sub:hover { color: var(--ink); background: var(--paper-2); }
+  nav a.sub.current { color: var(--blue); font-weight: 600; background: var(--blue-soft); transform: translateX(2px); }
+  nav a.sub.current::before { opacity: 1; transform: scaleY(1); }
+  nav summary a { transition: color .18s ease, background-color .18s ease; }
+  @media (prefers-reduced-motion: reduce) { nav a.sub, nav a.sub::before, nav summary a { transition: none; } nav a.sub.current { transform: none; } }
+
+  main { padding: 72px 72px 120px; max-width: 920px; }
+
+  .deskbar { position: sticky; top: 0; z-index: 10; display: flex; position: -webkit-sticky; align-items: center; gap: 12px; height: 52px; margin: -72px -72px 28px; padding: 0 72px;
+             background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+             border-bottom: 1px solid var(--rule); font-size: 16px; opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+  .deskbar.on { opacity: 1; pointer-events: auto; }
+  .deskbar a { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .deskbar a:hover { color: var(--ink); text-decoration: none; }
+  .deskbar #deskSection { font-weight: 600; color: var(--ink); flex: none; display: inline-flex; align-items: center; gap: 10px; }
+  .deskbar .num { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px;
+                  background: var(--blue); color: #fff; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .deskbar .num:empty { display: none; }
+  .deskbar .prog { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--blue); transition: width .12s linear; }
+  .deskbar #deskSecText, .deskbar #deskItem { transition: opacity .18s ease, transform .18s ease; }
+  .deskbar.swap #deskSecText, .deskbar.swap #deskItem { opacity: 0; transform: translateY(4px); }
+  .deskbar .sep { width: 1px; height: 18px; background: var(--rule); flex: none; }
+  .deskbar #deskItem:empty, .deskbar #deskItem:empty + .sep { display: none; }
+  @media (prefers-reduced-motion: reduce) { .deskbar { transition: none; } }
+  header:not(.part) h1 { font-size: clamp(40px, 5vw, 60px); line-height: 1.02; letter-spacing: -0.025em; font-weight: 700; margin: 0 0 20px; max-width: 14ch; }
+  header:not(.part) > p { font-size: 17px; color: var(--ink-2); margin: 0 0 20px; max-width: 60ch; }
+
+
+  section { margin: 0; padding: 56px 0 24px; scroll-margin-top: 48px; }
+  section + section { border-top: 1px solid var(--rule); }
+  section h2 { font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 10px; display: flex; align-items: baseline; gap: 16px; }
+  section h2 .n { color: var(--blue); font-weight: 600; font-size: 18px; min-width: 28px; font-variant-numeric: tabular-nums; }
+  section > p.lead { font-size: 18px; color: var(--ink-2); margin: 0 0 36px; max-width: 60ch; }
+
+  .intro-text { max-width: 66ch; margin: 0 0 28px; }
+  .intro-text p { margin: 0 0 14px; }
+  .item { background: none; border: 0; border-radius: 0; padding: 28px 0 8px; margin: 0; border-top: 1px solid var(--rule); scroll-margin-top: 56px; }
+  .item:first-of-type { border-top: 0; padding-top: 8px; }
+  .item h4 { margin: 0 0 18px; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .item h4 .tag { margin-left: 10px; }
+  .item p.sub-h { margin: -10px 0 16px; color: var(--ink-3); font-size: 15px; }
+
+  dl { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px 20px; margin: 0; }
+  dt { color: var(--blue); font-size: 14px; font-weight: 600; padding-top: 3px; }
+  dd { margin: 0; max-width: 66ch; }
+  dd ul, dd ol { padding-left: 20px; margin: 4px 0 0; }
+  dd li { margin: 5px 0; }
+  dd ul ul { margin-top: 6px; }
+
+  .item ul.plain { list-style: none; padding: 0; margin: 0 0 14px; max-width: 66ch; }
+  .item ul.plain li { padding: 5px 0 5px 24px; position: relative; }
+  .item ul.plain li::before { content: ""; position: absolute; left: 4px; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+  .item p.closer, .item div.closer { margin: 0 0 8px; max-width: 66ch; font-weight: 400; }
+  #why-things-we-all-want p.closer { font-weight: 500; }
+  .item .more { font-weight: 600; white-space: nowrap; margin-left: 4px; }
+  dt.wide { }
+  .card-foot { display: flex; justify-content: flex-end; margin: 6px 0 4px; max-width: 66ch; }
+  .card-foot .more { font-size: 14px; font-weight: 600; margin: 0; }
+  .g-search { display: flex; align-items: center; gap: 12px; margin: 0 0 20px; max-width: 66ch; }
+  .g-search input { flex: 1; font: inherit; font-size: 16px; color: var(--ink); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; }
+  .g-search input:focus { outline: 2px solid var(--blue); outline-offset: 1px; border-color: transparent; }
+  .g-count { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  dl.glossary .g-row.hide { display: none !important; }
+  dl.glossary .g-row mark { background: var(--blue-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .g-empty { color: var(--ink-3); }
+  dl.glossary { display: block; }
+  dl.glossary .g-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 4px 24px; padding: 10px 12px; margin: 0 -12px; border-radius: 10px; }
+  dt[id] { scroll-margin-top: 60px; }
+  dl.glossary dt { color: var(--ink); font-size: 16px; font-weight: 600; scroll-margin-top: 60px; }
+  dl.glossary dd { color: var(--ink-2); }
+  dl.glossary .more { font-size: 14px; }
+  .pies { display: flex; flex-wrap: wrap; gap: 24px 48px; margin: 18px 0 8px; align-items: flex-start; }
+  .pie-fig { margin: 0; flex: 0 0 auto; width: 260px; }
+  .pie-head { display: flex; flex-direction: column; margin: 0 0 12px; }
+  .pie-month { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: .01em; }
+  .pie-total { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .pie-fig figcaption { font-size: 13px; color: var(--ink-3); margin: 12px 0 0; line-height: 1.45; }
+  .pie-fig svg { display: block; }
+  .pie-fig svg path { stroke: var(--paper); stroke-width: 3; stroke-linejoin: round; }
+  .pie-fig svg text { fill: #fff; text-anchor: middle; dominant-baseline: central; }
+  .pie-fig svg .t-pc { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .pie-fig svg .t-name { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; opacity: .95; }
+  .pie-fig svg .t-sl { font-size: 10px; font-weight: 500; opacity: .8; }
+  .pie-fig svg path.pa { fill: #3457F5; }
+  .pie-fig svg path.pb { fill: #22946A; }
+  .pie-fig svg path.pc { fill: #8457E6; }
+  @media (prefers-color-scheme: dark) {
+    .pie-fig svg path.pa { fill: #4A69FF; }
+    .pie-fig svg path.pb { fill: #2CA776; }
+    .pie-fig svg path.pc { fill: #9A72FF; }
+  }
+  .pie-demo { margin: 14px 0 4px; max-width: 66ch; }
+  .pie-row { margin: 0 0 12px; }
+  .pie-cap { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; }
+  .pie-cap span { font-weight: 400; color: var(--ink-3); }
+  .pie-bar { display: flex; height: 56px; border-radius: 8px; overflow: hidden; gap: 2px; }
+  .pie-bar > div { display: flex; flex-direction: column; justify-content: center; padding: 0 10px; min-width: 0; font-size: 12px; line-height: 1.15; color: #fff; }
+  .pie-bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+  .pie-bar em { font-style: normal; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pie-bar .pa { background: #2B4BFF; }
+  .pie-bar .pb { background: #1D7A4E; }
+  .pie-bar .pc { background: #7A3FE0; }
+  @media (prefers-color-scheme: dark) { .pie-bar .pa { background: #4C66FF; } .pie-bar .pb { background: #2E9A66; } .pie-bar .pc { background: #9B6BFF; } }
+  .pie-note { font-size: 14px; color: var(--ink-2); margin: 6px 0 0; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 999px; color: #fff; margin-right: 6px; vertical-align: 1px; }
+  .pill.p-tbd { background: transparent; color: var(--ink-2); border: 1.5px dashed var(--ink-3); padding: 1px 7px; margin-left: 6px; margin-right: 0; }
+  .pill.p-cash { background: #2B4BFF; } .pill.p-work { background: #1D7A4E; } .pill.p-gear { background: #7A3FE0; } .pill.p-business { background: #B8860B; } .pill.p-risk { background: #8B3A62; }
+  .formula { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: 10px 0 14px; padding: 12px 16px; background: var(--paper-2); border-left: 3px solid var(--blue); border-radius: 0 8px 8px 0; display: inline-block; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--paper-2); color: var(--ink-2); vertical-align: middle; }
+  .tag.ok { background: var(--green-soft); color: var(--green); }
+
+  .rule { background: var(--blue-soft); border: 0; border-left: 3px solid var(--blue); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { color: var(--ink-3); font-weight: 600; font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+
+  header.part { margin: 96px 0 0; padding: 48px 0 0; border-top: 4px solid var(--blue); }
+  header.part h1 { font-size: 40px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  header.part p { color: var(--ink-2); font-size: 18px; margin: 0 0 8px; max-width: 60ch; }
+
+  #glossaryPane { grid-column: 1 / -1; padding: 0 72px 96px; max-width: 920px; }
+  #glossaryPane section { border-top: 1px solid var(--rule); }
+  @media (min-width: 1500px) {
+    .wrap { grid-template-columns: 280px minmax(0, 1fr) 360px; }
+    #glossaryPane { grid-column: 3; grid-row: 1; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 24px 48px; max-width: none;
+                    border-left: 1px solid var(--rule); background: var(--paper); }
+    #glossaryPane section { border-top: 0; padding: 0; margin: 0; }
+    #glossaryPane h2 { display: none; }
+    #glossaryPane p.lead { display: none; }
+    #glossaryPane .g-search { position: sticky; top: 0; background: var(--paper); padding: 22px 0 14px; margin: 0 0 10px; z-index: 1; border-bottom: 1px solid var(--rule); }
+    #glossaryPane .g-search input { font-size: 14px; padding: 8px 12px; }
+    #glossaryPane dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 8px 10px; margin: 0 -10px; }
+    #glossaryPane dl.glossary dt { font-size: 14px; margin-top: 0; }
+    #glossaryPane dl.glossary dd { font-size: 13px; line-height: 1.5; }
+    #glossaryPane dl.glossary .more { font-size: 12px; }
+    main { max-width: none; }
+  }
+  .gloss-head, .gloss-backdrop { display: none; }
+  @media (max-width: 900px) {
+    .gloss-btn { margin-left: auto; }
+    .mobilebar-title { order: 2; flex: 1; }
+    .gloss-btn { order: 3; }
+    #glossaryPane { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; height: 72vh; height: 72dvh; max-width: none; padding: 0 16px 24px;
+                    background: var(--paper); border-top: 1px solid var(--rule); border-radius: 18px 18px 0 0; box-shadow: 0 -12px 40px rgba(0,0,0,.25);
+                    overflow-y: auto; transform: translateY(104%); transition: transform .28s ease; }
+    body.gloss-open #glossaryPane { transform: none; }
+    body.gloss-open { overflow: hidden; }
+    .gloss-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    body.gloss-open .gloss-backdrop { opacity: 1; pointer-events: auto; }
+    .gloss-head { display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 3; background: var(--paper); height: 48px; margin: 0 -16px; padding: 0 16px; }
+    .gloss-handle { width: 40px; height: 5px; border-radius: 3px; background: var(--rule); }
+    .gloss-close { position: absolute; right: 16px; top: 8px; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); background: var(--paper-2); border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+    #glossaryPane section { border-top: 0; padding: 0; margin: 0; }
+    #glossaryPane h2 { display: none; }
+    #glossaryPane p.lead { display: none; }
+    #glossaryPane .g-search { position: sticky; top: 48px; z-index: 2; background: var(--paper); padding: 0 0 12px; margin: 0 0 6px; border-bottom: 1px solid var(--rule); }
+    #glossaryPane dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 10px; margin: 0 -10px; }
+    #glossaryPane dl.glossary dt { font-size: 15px; margin-top: 0; }
+    #glossaryPane dl.glossary dd { font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) { #glossaryPane, .gloss-backdrop { transition: none; } }
+  }
+  dl.glossary .g-row { position: relative; transition: background-color .3s ease; }
+  dl.glossary .g-row.flash { animation: gflash 2.6s ease-out forwards; }
+  dl.glossary .g-row.flash dt { color: var(--blue); }
+  dl.glossary .g-row.flash::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--blue); animation: gbar 2.6s ease-out forwards; }
+  @keyframes gflash { 0% { background-color: color-mix(in srgb, var(--blue) 22%, transparent); } 40% { background-color: color-mix(in srgb, var(--blue) 14%, transparent); } 100% { background-color: transparent; } }
+  @keyframes gbar { 0% { transform: scaleY(0); opacity: 1; } 15% { transform: scaleY(1); opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { dl.glossary .g-row.flash { animation: none; background-color: var(--blue-soft); } dl.glossary .g-row.flash::before { animation: none; } }
+  .see { display:inline-block; margin-top:6px; font-size:14px; color: var(--ink-3); }
+  header p.pledge { font-weight: 700; font-size: 20px; color: #E8650A; margin: 4px 0 8px; }
+  @media (prefers-color-scheme: dark) { header p.pledge { color: #FF8A3D; } }
+  header .objectives { margin: 20px 0 0; max-width: 66ch; }
+  header .parts-index { margin: 32px 0 48px; max-width: 66ch; display: grid; gap: 20px; }
+  header .parts-index .part-entry p { margin: 0; }
+  header .parts-index .part-name { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0 0 4px; }
+  header .parts-index .part-entry > p:not(.part-name) { font-size: 17px; color: var(--ink-2); margin: 0 0 6px; }
+  header .parts-index a { font-size: 15px; font-weight: 600; color: var(--blue); text-decoration: none; }
+  header .parts-index a:hover { text-decoration: underline; }
+
+  header .objectives h3 { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 8px; letter-spacing: 0; text-transform: none; }
+  header .objectives ul.plain { list-style: none; padding: 0; margin: 0 0 12px; }
+  header .objectives ul.plain li { padding: 4px 0 4px 22px; position: relative; font-size: 17px; color: var(--ink); }
+  header .objectives ul.plain li::before { content: ""; position: absolute; left: 4px; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+  header .objectives p { font-size: 17px; color: var(--ink); font-weight: 500; margin: 0; }
+  .foot { color: var(--ink-3); font-size: 14px; margin-top: 56px; max-width: 60ch; }
+
+  .mobilebar, .toc-close { display: none; }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); }
+    main, .item, dd, dl { min-width: 0; }
+    .deskbar { display: none; }
+    .mobilebar { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 20; height: calc(56px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 16px 0;
+                 background: var(--paper); border-bottom: 1px solid var(--rule); }
+    .toc-btn { flex: none; text-decoration: none; display: inline-block; font: inherit; font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-soft);
+               border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+    .toc-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .mobilebar-title { min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+    .mobilebar-book { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+    .mobilebar-section { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    nav { position: fixed; inset: 0; z-index: 30; height: 100vh; height: 100dvh; padding: calc(16px + env(safe-area-inset-top)) 20px 40px; border-right: 0;
+          transform: translateY(100%); opacity: 0; visibility: hidden; transition: transform .25s ease, opacity .2s ease, visibility 0s .25s; }
+    body.toc-open nav, nav:target { transform: none; opacity: 1; visibility: visible; transition: transform .25s ease, opacity .2s ease, visibility 0s; }
+    body.toc-open { overflow: hidden; }
+    @media (prefers-reduced-motion: reduce) { nav { transition: none; } body.toc-open nav { transition: none; } }
+    .toc-close { display: block; text-decoration: none; position: sticky; top: 0; float: right; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink);
+                 background: var(--paper-2); border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; margin: 0 0 8px 12px; }
+    nav h1 { margin-top: 8px; }
+    nav a { font-size: 16px; padding: 8px 8px; }
+    nav a.sub { font-size: 14px; padding: 5px 8px 5px 30px; }
+    nav:focus, #glossaryPane:focus { outline: none; }
+    main { padding: 28px 20px 80px; }
+    section { scroll-margin-top: 72px; }
+    .item { scroll-margin-top: 68px; }
+    dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    dt { margin-top: 12px; }
+        header:not(.part) h1 { font-size: 34px; }
+    section h2 { font-size: 26px; }
+    table { display: block; overflow-x: auto; }
+  }
+  @media print {
+    nav { display: none; } .wrap { display: block; } main { padding: 0; max-width: none; }
+    body { background: #fff; color: #000; } .item { break-inside: avoid; } a { color: inherit; }
+  }
+  nav .nav-root, nav .nav-part { display: none; }
+  nav[data-level="root"] .nav-root { display: block; }
+  nav[data-level="agreement"] .nav-part[data-part="agreement"], nav[data-level="ops"] .nav-part[data-part="ops"], nav[data-level="founding"] .nav-part[data-part="founding"] { display: block; }
+  nav .nav-eyebrow { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 10px; }
+  nav .nav-eyebrow a { color: inherit; text-decoration: none; }
+  nav .nav-eyebrow a:hover { color: var(--blue); }
+  nav .nav-part-btn { display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: var(--paper-2); border: 0; border-radius: 10px; padding: 12px 14px; margin: 0 0 10px; cursor: pointer; text-decoration: none; }
+  nav .nav-part-btn b { display: block; font-size: 15px; font-weight: 700; margin: 0 0 3px; }
+  nav .nav-part-btn span { display: block; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
+  nav .nav-part-btn:hover { background: var(--blue-soft); }
+  nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
+  nav .nav-back::before { content: "\2039\00a0"; }
+  header .parts-index .part-name a { color: inherit; text-decoration: none; }
+  header .parts-index .part-name a:hover { color: var(--blue); }
+  @media (max-width: 900px) { nav .nav-part-btn b { font-size: 16px; } nav .nav-part-btn span { font-size: 14px; } }
+</style>
+</head>
+<body id="top">
+<div class="wrap">
+<div class="mobilebar" role="banner">
+  <a class="toc-btn" id="tocBtn" href="#siteNav" role="button" aria-controls="siteNav" aria-expanded="false">Contents</a>
+  <button class="toc-btn gloss-btn" id="glossBtn" aria-controls="glossaryPane" aria-expanded="false">Glossary</button>
+  <div class="mobilebar-title"><span class="mobilebar-book">Studio operating manual</span><span class="mobilebar-section" id="mobileSection"></span></div>
+</div>
+<nav id="siteNav" tabindex="-1" aria-label="Contents" data-level="ops" data-home="ops">
+  <a class="toc-close" id="tocClose" href="#top" role="button" aria-label="Close contents">Close</a>
+  <div class="nav-root">
+    <p class="nav-eyebrow"><a href="index.html">Contents</a></p>
+    <a class="nav-part-btn" href="agreement.html"><b>The Agreement Manual</b><span>What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement.</span></a>
+    <button type="button" class="nav-part-btn" data-go="ops"><b>Studio operating manual</b><span>How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and the manager's instructions.</span></button>
+    <a class="nav-part-btn" href="meeting.html"><b>Founding</b><span>How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies.</span></a>
+  </div>
+  <div class="nav-part" data-part="ops">
+    <button type="button" class="nav-back" data-go="root">All parts</button>
+    <h1>Studio operating manual</h1>
+  <details open><summary><a href="#time"><span class="n">1</span>Booking the studio</a></summary>
+    <a class="sub" href="#time-first-to-book-has-the-room">First to book has the room</a>
+    <a class="sub" href="#time-the-tripwire">The tripwire</a>
+  </details>
+  <details open><summary><a href="#gear"><span class="n">2</span>Gear</a></summary>
+    <a class="sub" href="#gear-the-gear-list-and-the-loan-list">The gear list</a>
+    <a class="sub" href="#gear-renting-gear-to-clients">Renting gear to clients</a>
+    <a class="sub" href="#gear-borrowing-gear-as-a-partner">Borrowing gear as a partner</a>
+    <a class="sub" href="#gear-buying-new-gear">Buying new gear</a>
+    <a class="sub" href="#monthly-repairs-and-consumables-come-out-of-the-">Maintenance</a>
+    <a class="sub" href="#gear-liability">Liability</a>
+  </details>
+  <details open><summary><a href="#income"><span class="n">3</span>Moving money</a></summary>
+    <a class="sub" href="#income-the-records">Where things get recorded</a>
+    <a class="sub" href="#income-fees">Partner fees</a>
+    <a class="sub" href="#income-regular-fees">Regular fees</a>
+    <a class="sub" href="#income-client-sessions">Client sessions</a>
+    <a class="sub" href="#income-gear-rental">Gear rental</a>
+    <a class="sub" href="#income-events">Events</a>
+    <a class="sub" href="#income-sponsorships-grants-and-deals">Sponsorships, grants, and deals</a>
+    <a class="sub" href="#income-paying-out">Paying out</a>
+  </details>
+  <details open><summary><a href="#close"><span class="n">4</span>The monthly close</a></summary>
+    <a class="sub" href="#close-the-checklist">The checklist</a>
+    <a class="sub" href="#close-what-partners-do">What partners do at the close</a>
+    <a class="sub" href="#close-what-gets-posted">What gets posted</a>
+    <a class="sub" href="#close-dates">Dates</a>
+  </details>
+  </div>
+  <a class="sub" href="#glossary" style="margin-top:28px;display:block">Glossary</a>
+</nav>
+<main>
+<div class="deskbar" aria-hidden="true"><a id="deskSection" href="#"><span class="num" id="deskNum"></span><span id="deskSecText"></span></a><span class="sep"></span><a id="deskItem" href="#"></a><span class="prog" id="deskProg"></span></div>
+<header id="part-ops">
+  <h1>Studio operating manual</h1>
+  <p>How we run the place day to day: the room, the gear, moving money, and the monthly close.</p>
+</header>
+
+<section id="time">
+  <h2><span class="n">1</span>Booking the studio</h2>
+  <p class="lead">Fully open, calendar is king.</p>
+
+  <div class="item" id="time-first-to-book-has-the-room">
+    <h4>First to book has the room</h4>
+    <dl>
+      <dt>What</dt><dd>One shared calendar. Whoever books a slot first has it, whether that's a partner or a paying client. No hour limits for partners, and no tracking: nobody logs or counts how much anyone uses the room. (Work hours for the studio are a different thing and are logged, because they earn ownership. Use hours never are.)</dd>
+      <dt>Why</dt><dd>Partners want the room to feel like theirs, not like a gym with a punch card. Clients need to know a booking is a booking. First-come handles both without anyone counting hours.</dd>
+      <dt>How</dt><dd>Put your time on the calendar before you show up. If it's blank, it's available to anyone, including a client the manager books. If it's yours, it's yours.</dd>
+      <dt>Rules</dt><dd><b>Nobody bumps anybody, in either direction.</b> A partner can't take a client's slot, and a client can't take a partner's.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="time-the-tripwire">
+    <h4>The tripwire</h4>
+    <dl>
+      <dt>What</dt><dd>Any partner can call a usage review at any time, about the system or about one person. If someone's use of the room looks egregious (the room is theirs five nights a week, clients can't get in, gear's always set up for their session), any partner can ask for it to be looked at. Calling the review is a right; deciding anything is a <a href="agreement.html#equity-voting-who-decides-what">regular vote</a>.</dd>
+      <dt>Why</dt><dd>Fully open works until it doesn't. The tripwire means nobody has to feel like the bad guy for raising it, and nobody gets ambushed by a rule change they didn't see coming.</dd>
+      <dt>How</dt>
+      <dd>
+        <ul>
+          <li><b>Reviewing one person's use:</b> say so at the <a href="agreement.html#equity-how-the-4x-2x-multiplier-actually-works">monthly close</a>. The calendar is the record, so it's a look at the last two or three months, not an argument about memory. Outcome is a conversation first: an agreement on how that person books going forward, or nothing if it turns out fine.</li>
+          <li><b>If it doesn't resolve:</b> the regular vote (majority of units and at least two people) can set a limit for that partner (nights per week, or no more than X hours in the next 30 days) for a fixed period, or switch the whole room to included blocks. No special threshold; same rule as every other decision.</li>
+          <li><b>Reviewing the system:</b> same place, same vote. A switch from fully open to included blocks applies to everyone.</li>
+        </ul>
+      </dd>
+      <dt>Rules</dt><dd>Using the room a lot is not "cause" for anything (see <a href="agreement.html#leaving-cause-is-defined-narrowly">Removal</a>). It's a scheduling problem, handled here. Also revisit if a new partner joins at a very different ownership level than the others, since fully open assumes everyone's roughly in the same boat.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="gear">
+  <h2><span class="n">2</span>Gear</h2>
+  <p class="lead">What's in the room, who owns it, how it goes out to clients, and how it gets bought and fixed. The value side of gear a partner brings in is in <a href="agreement.html#contrib-gear">Contributions</a>.</p>
+
+  <div class="item" id="gear-the-gear-list-and-the-loan-list">
+    <h4>The gear list</h4>
+    <p class="sub-h">Everything in and everything out, one line each. The lists are whatever's in without an out.</p>
+    <dl>
+      <dt>What</dt><dd>One shared sheet, kept by the manager, that works like the <a href="agreement.html#contrib-the-ledger">ledger</a> does for contributions: a log, not a snapshot. Every item gets a line the day it comes in: date, item, serial, owner (the LLC or a partner), agreed value, condition, and how it came in: <a href="#gear-buying-new-gear">bought by the studio</a>, or a partner's own gear <a href="agreement.html#contrib-gear">sold to the studio, lent free, or lent for ownership</a>. It gets another line the day it goes out: date, where, who has it, and why: rented to a client, out for repair, back to its owner, sold. What's in the room right now is every item with an in and no out.</dd>
+      <dt>How</dt><dd>Two views of the same sheet: what the <b>LLC owns</b>, and the <b>loan list</b>, what's in the room but still a partner's. Nothing comes in without the manager's yes and a line (see <a href="agreement.html#contrib-gear">Gear contributions</a> for how value and ownership are agreed). Nothing leaves, even for a night, without a line. The insurance schedule is built from what the LLC owns.</dd>
+      <dt>Rules</dt><dd>If it isn't on the list, it isn't in the studio: no "I bought it on my card and it lives here." Partners use everything on both lists for their own sessions; personal gear lent free is used with the owner's standing okay, noted on its line. An item that comes back from a rental or a repair gets a condition note on the way in.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="gear-renting-gear-to-clients">
+    <h4>Renting gear to clients</h4>
+    <dl>
+      <dt>What</dt><dd>A client taking the studio's gear out of the building for a job elsewhere. Gear in the room comes with the booking and is never rented separately. Prices and invoicing are in <a href="#income-gear-rental">Moving money</a>; this is how it's handled.</dd>
+      <dt>Why</dt><dd>Gear sitting idle earns nothing, and gear walking out the door without paperwork is how it disappears.</dd>
+      <dt>How</dt>
+      <dd>
+        <p style="margin:0 0 8px"><b>Sign-out:</b> the manager signs off. A dated sign-out sheet lists each item and serial, the client signs it, and a deposit is taken before anything moves. Condition is checked and photographed on the way out and the way back.</p>
+        <p style="margin:0"><b>Damage or loss:</b> the deposit first, the studio's insurance second. The client is invoiced for the difference.</p>
+      </dd>
+      <dt>Rules</dt><dd>LLC-owned gear goes out by default. Partner gear on the loan list is rented to clients only with the owner's okay, recorded once on the list; lent-free gear never leaves the room with a client. Rental income is the studio's either way; a partner lending for ownership keeps their monthly credit and nothing more.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="gear-borrowing-gear-as-a-partner">
+    <h4>Borrowing gear as a partner</h4>
+    <p class="sub-h">In the room it's yours to use. Out of the room it's signed out, free.</p>
+    <dl>
+      <dt>What</dt><dd>Everything on the gear list is there for partners to use in their own sessions; the fee covers it. Taking the studio's gear out for a show or a session elsewhere is covered too, at no charge, as long as the room doesn't need it.</dd>
+      <dt>How</dt><dd>Same sign-out as a <a href="#gear-renting-gear-to-clients">client rental</a>, minus the money: a line on the <a href="#gear-the-gear-list-and-the-loan-list">gear list</a> with what, who, and when it's back, and a message to the manager. No deposit, no invoice. Check the calendar first: if a session is booked that needs it, it stays.</dd>
+      <dt>Rules</dt>
+      <dd>
+        <p style="margin:0 0 8px"><b>Booked sessions win.</b> Gear is back before the next booking that needs it, not the next time you're around.</p>
+        <p style="margin:0 0 8px"><b>Normal-use damage is the studio's</b> (see <a href="#gear-liability">Liability</a>). Loss or carelessness, like a mic left in a van overnight, is the partner's, up to the insurance deductible.</p>
+        <p style="margin:0 0 8px"><b>Your own lent gear is yours to take,</b> any time, no charge. Log it out so the room knows, and if it's lent for ownership it earns nothing for the months it's gone.</p>
+        <p style="margin:0"><b>Not for lending onward.</b> A partner doesn't take studio gear out for a friend; the friend is a client and rents it themselves.</p>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="gear-buying-new-gear">
+    <h4>Buying new gear</h4>
+    <dl>
+      <dt>What</dt><dd>When the studio needs something new, the LLC buys it from the LLC's account, in the LLC's name.</dd>
+      <dt>Why</dt><dd>So the receipt, the insurance, and the write-off are all the studio's, and the item clearly stays if a partner leaves.</dd>
+      <dt>How</dt><dd>Any partner proposes it. Inside the buildout budget, or under $2,000 with a heads-up to the partners, the manager buys it; $2,000 and over is a <a href="agreement.html#equity-voting-who-decides-what">regular vote</a>. If a partner is funding it, they put the cash into the LLC first as a <a href="agreement.html#contrib-cash">cash contribution</a> and the LLC pays the vendor. Receipt in the shared folder, item on the gear list the day it arrives.</dd>
+      <dt>Rules</dt><dd>No partner buys studio gear on a personal card and hands it over; that's either a reimbursement or a contribution, and it's decided before the purchase. Where possible keep single items under $2,500 so they can be written off at once (see <a href="meeting.html#timing-gear-can-be-bought-any-year">Timing</a>).</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="monthly-repairs-and-consumables-come-out-of-the-">
+    <h4>Maintenance</h4>
+    <p class="sub-h">Keeping the room working. The studio pays, not whoever noticed.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Consumables are a studio cost.</b> Strings, drumheads, cables, tape, batteries, cleaning supplies, coffee. Kept stocked from the account, with a running list of what's low that anyone can add to.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Repairs are a studio cost.</b> A blown speaker, a dead channel, a tech visit, a plumber. Under $200 the manager just handles it. Over that, a quick message to the partners first, and $2,000 or over it's a <a href="agreement.html#equity-voting-who-decides-what">vote</a>.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Say something the day it breaks.</b> A broken item gets a note on its <a href="#gear-the-gear-list-and-the-loan-list">gear list</a> line and a tag on the item, so the next session doesn't find out the hard way. Nobody's in trouble for breaking something in normal use (see <a href="#gear-liability">Liability</a>); people are in trouble for hiding it.</p>
+    <p class="closer" style="margin:0 0 10px"><b>If a partner fronts something urgent,</b> they drop the receipt in the shared folder and pick one: get <b>reimbursed</b> (no ownership earned) or log it as a <b>contribution</b> (earns ownership, no reimbursement). Either is fine; it has to be written down. No receipt, no reimbursement and no contribution.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Routine upkeep is logged work.</b> Cleaning, cable checks, swapping tubes, re-stringing the house guitars, backing up the session drive. A partner who does it logs the hours at the admin or maintenance rate like any other <a href="agreement.html#equity-sweat-equity">work</a>.</p>
+    <p class="closer" style="margin:0"><b>Leave it how you found it.</b> Patch bay normalled, mics in their cases, console zeroed, trash out. The room is everyone's next session.</p>
+  </div>
+  <div class="item" id="gear-liability">
+    <h4>Liability</h4>
+    <p class="sub-h">What's insured, whose gear, and who pays when something breaks.</p>
+    <p class="closer" style="margin:0 0 10px"><b>General liability</b> covers people getting hurt and damage to other people's property. It's what the landlord and venues want the <a href="meeting.html#next">certificate of insurance</a> for.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Property coverage,</b> usually an inland marine policy for gear, covers the studio's equipment against theft, fire, water, and damage, in the room and on the road.</p>
+    <p class="closer" style="margin:0 0 10px"><b>The LLC's gear is scheduled</b> on the property policy from the gear list. Anything over an agreed value is scheduled individually when it comes in.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Partner gear on the loan list is covered while it's in the room,</b> as property of others in the studio's care. That's the promise behind "the LLC insures it while it's there" in <a href="agreement.html#contrib-gear">Gear contributions</a>, and it only holds if the list is current.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Client gear in the room is the client's responsibility</b> unless the studio is handling it. The booking says so.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Wear and tear is a studio repair,</b> paid from the account (see <a href="#monthly-repairs-and-consumables-come-out-of-the-">Maintenance</a>).</p>
+    <p class="closer" style="margin:0 0 10px"><b>A client damaged it:</b> their deposit, then insurance, then an invoice for the difference.</p>
+    <p class="closer" style="margin:0 0 10px"><b>A partner damaged lent gear in normal use:</b> the studio repairs or replaces it. Nobody's personal money.</p>
+    <p class="closer" style="margin:0 0 10px"><b>Theft, fire, flood:</b> a claim, with the gear list as the schedule. The deductible is a studio expense.</p>
+    <p class="closer" style="margin:0"><b>Gear leaving the building is only covered if the policy says off-premises,</b> so that's checked before the first rental. And no gear in the room before a policy is bound, the stopgap company's or the studio's.</p>
+  </div>
+</section>
+
+<section id="income">
+  <h2><span class="n">3</span>Moving money</h2>
+  <p class="lead">What the studio gets paid, by whom, and how money goes out again. All of it goes through the LLC's account and is the studio's money, kept in the <a href="#g-books">books</a>; it is never anyone's contribution. It pays the bills, builds the reserve, and what's left is distributed by ownership share (see <a href="agreement.html#money-where-the-money-goes">Where does the money go?</a>).</p>
+
+  <div class="item" id="income-the-records">
+    <h4>Where things get recorded</h4>
+    <p class="sub-h">Four records. Every card below says which one each thing goes in.</p>
+    <p class="closer" style="margin:0 0 8px"><b>The books.</b> Every dollar in and out of the LLC's account, tagged: fee, client, rental, event, sponsorship, grant, loan, reimbursement, expense, distribution. The bookkeeping tool plus the bank statement. The accountant works from this (see <a href="#g-books">Books</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>The gear list.</b> Every item in and out of the room, including rentals and sign-outs (see <a href="#gear-the-gear-list-and-the-loan-list">The gear list</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>The calendar.</b> Every booking and event, with the deposit status on the entry (see <a href="#time">Booking the studio</a>).</p>
+    <p class="closer" style="margin:0"><b>The shared folder.</b> The paper: invoices sent, receipts, signed agreements, sign-out sheets, count sheets, W-9s. One subfolder per month.</p>
+  </div>
+
+  <div class="item" id="income-fees">
+    <h4>Partner fees</h4>
+    <p class="sub-h">The price of access. Same for everyone, every month.</p>
+    <dl>
+      <dt>What it is</dt><dd>The flat monthly amount every partner pays the studio for access to the room and <a href="#gear-borrowing-gear-as-a-partner">borrowing gear</a>.</dd>
+      <dt>Price</dt><dd>The same for every partner, set in the band (see <a href="agreement.html#money-partners-pay-a-flat-monthly-rate-for-unl">How is the monthly fee set?</a>).</dd>
+      <dt>How</dt><dd>Due on the 1st. Set up recurring Zelle or bill pay from your bank to the LLC's account, memo "studio access" and the month (see <a href="agreement.html#money-how-payments-actually-move">How does money actually move?</a>). The LLC sends the invoice the same day; keep it for your taxes.<br><b>The manager records it:</b> invoice sent on the 1st and saved to the shared folder; the deposit matched to it in the books and tagged "fee" at the monthly close; any shortfall noted in the books against that partner.</dd>
+      <dt>Rules</dt>
+      <dd>
+        <p style="margin:0 0 8px"><b>It covers your own sessions and your use of the studio's gear,</b> in the room and <a href="#gear-borrowing-gear-as-a-partner">out of it</a>. It never covers a client's session you're engineering, and it never buys ownership.</p>
+        <p style="margin:0 0 8px"><b>Never a contribution.</b> Anything paid above it is one, by default (see <a href="agreement.html#fee">The fee</a>).</p>
+        <p style="margin:0 0 8px"><b>Miss a month and nothing bad happens.</b> Tell the manager before the 1st, the shortfall is noted, the reserve covers it, and you earn no extra ownership that month (see <a href="agreement.html#monthly-a-bad-month-is-not-a-crisis">What if I can't pay one month?</a>).</p>
+        <p style="margin:0 0 8px"><b>At 90 days unpaid,</b> the other partners cover the gap as a <a href="agreement.html#equity-capital-calls">capital call</a> and the unpaid partner's share is <a href="agreement.html#equity-dilution">diluted</a> by the ordinary pie math. That's the only penalty, and it's three months out.</p>
+        <p style="margin:0 0 8px"><b>No late fees between partners.</b> The studio isn't a landlord.</p>
+        <p style="margin:0"><b>No sales tax</b> on room access.</p>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="income-regular-fees">
+    <h4>Regular fees</h4>
+    <p class="sub-h">Access without ownership.</p>
+    <dl>
+      <dt>What it is</dt><dd>The flat monthly amount a <a href="agreement.html#roles-regular">regular</a> pays for access to the room. Same calendar, same gear, same open booking as a partner. No slices, no vote, no K-1.</dd>
+      <dt>Price</dt><dd>The manager sets it on the fee sheet, usually higher than a partner's; like any fee-sheet number, a <a href="agreement.html#equity-voting-who-decides-what">regular vote</a> can change it. Not in the partners' band; a regular pays what the access is worth.</dd>
+      <dt>How</dt><dd>Same mechanics as a partner: due on the 1st, bank to bank or by the invoice's pay button, invoice from the LLC the same day.<br><b>The manager records it:</b> invoice in the shared folder, payment tagged "fee, regular" in the books at the close, a missed month noted there and access paused on the calendar.</dd>
+      <dt>Rules</dt>
+      <dd>
+        <p style="margin:0 0 8px"><b>It covers their own sessions and the gear in the room.</b> Taking gear out of the building is a <a href="#gear-renting-gear-to-clients">client rental</a>.</p>
+        <p style="margin:0 0 8px"><b>Nothing above it earns ownership.</b> A regular can't contribute their way in; becoming a partner is a vote and a signature (see <a href="agreement.html#roles-regular">Regular</a>).</p>
+        <p style="margin:0 0 8px"><b>A missed month is a missed month.</b> Access pauses until it's paid; there's no reserve covering a regular, and no capital call either.</p>
+        <p style="margin:0"><b>A client a regular brings in</b> earns the 15% commission as a cash finder's fee, never slices.</p>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="income-client-sessions">
+    <h4>Client sessions</h4>
+    <p class="sub-h">Outside clients booking the room. What turns a shared space into a business.</p>
+    <dl>
+      <dt>What it is</dt><dd>A client who isn't a partner or regular pays for the room by the hour, by the day, or per project.</dd>
+      <dt>Price</dt><dd>The fee sheet: hourly, daily, and project rates plus a deposit policy. The manager writes it, a <a href="agreement.html#equity-voting-who-decides-what">regular vote</a> changes it, and any partner can hand it to a stranger. Discounts for a specific client are the manager's call up to an agreed percentage, logged with the booking.</dd>
+      <dt>How</dt><dd>Booked on the calendar like anything else (see <a href="#time">Booking the studio</a>). A deposit holds the date; the balance is due before the session starts, or on the invoice's due date for project work. Invoice from the LLC, with any gear going out of the building on its own line, paid by ACH or card, with the card fee priced into the rate (see <a href="agreement.html#money-how-payments-actually-move">How does money actually move?</a>). Cancel inside the window on the fee sheet and the deposit is kept; outside it, the deposit moves to a new date. Refunds come only from the manager, from the account. The client pays the studio, never a person.<br><b>The manager records it:</b> the booking on the calendar with "deposit paid" on the entry; the invoice in the shared folder; deposit and balance tagged "client" in the books, with the referring partner's name on the entry so the commission can be worked out (see <a href="agreement.html#equity-bringing-in-clients">Business</a>).</dd>
+      <dt>Who gets paid</dt>
+      <dd>
+        <p style="margin:0 0 8px"><b>The partner who brought the client.</b> 15% of what the client pays, every month they keep paying, taken as ownership or as cash (see <a href="agreement.html#equity-bringing-in-clients">Business</a>).</p>
+        <p style="margin:0 0 8px"><b>The partner who works the session.</b> Pre-freeze, the hours are logged as <a href="agreement.html#equity-sweat-equity">work</a> at the engineering rate and earn slices; no cash. Post-freeze, it's a guaranteed payment at a rate set by vote. Default until the partners vote otherwise.</p>
+        <p style="margin:0"><b>A non-partner engineer.</b> A contractor on a 1099 (see <a href="agreement.html#roles-workers-who-aren-t-partners">Workers</a>).</p>
+      </dd>
+      <dt>Rules</dt><dd>A partner's own sessions are covered by their fee. A partner's outside client pays the client rate even when the partner is the one engineering, and nobody books the room under their own name to give a client a cheaper one. Nobody takes a cut of a client's payment directly; the studio pays the worker.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="income-gear-rental">
+    <h4>Gear rental</h4>
+    <p class="sub-h">Studio gear leaving the building with a client. In the room, it comes with the room.</p>
+    <dl>
+      <dt>What it is</dt><dd>A client taking the studio's gear out for a job somewhere else. A client who books the room gets everything in it; nothing in the room is rented separately.</dd>
+      <dt>Price</dt><dd>Per item, per day, on the fee sheet, plus a deposit.</dd>
+      <dt>How</dt><dd>Its own invoice line, with New Jersey sales tax collected on it and passed to the state (see <a href="agreement.html#nj-sales-tax-on-studio-time">Sales tax</a>). Sign-out, deposits, and damage are handled as in <a href="#gear-renting-gear-to-clients">Gear</a>.<br><b>The manager records it:</b> an out line and a back line on the gear list; the signed sign-out sheet in the shared folder; the rental tagged "rental" and the sales tax as collected in the books; the deposit in the books as held, then refunded or applied.</dd>
+      <dt>Rules</dt><dd>Partners never pay gear rental, in the room or out of it; it's in the fee (see <a href="#gear-borrowing-gear-as-a-partner">Borrowing gear as a partner</a>). Rental income on gear a partner lent for ownership is the studio's; the lender's monthly credit doesn't change.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="income-events">
+    <h4>Events</h4>
+    <p class="sub-h">Shows, listening parties, workshops. Door money and tickets.</p>
+    <dl>
+      <dt>What it is</dt><dd>Anything the studio runs or hosts where people pay to be there: a show in the room, a release party, a class, a studio night out at a venue.</dd>
+      <dt>Price</dt><dd>Set per event by whoever is running it with the manager, before it's announced: ticket price, door split, what the acts get.</dd>
+      <dt>How</dt><dd>Door money is counted by two people the same night, on a count sheet, and deposited the next business day. Acts, the venue, and the event's costs are paid first; what's left is studio income.<br><b>The manager records it:</b> the event on the calendar; the budget and the signed count sheet in the shared folder; the deposit tagged "event" in the books, each payout tagged against the event.</dd>
+      <dt>Rules</dt><dd>A partner performing is paid like any act, from the event's budget, not from the pie. Door cash is never in someone's pocket overnight without the count sheet. Events in the room follow the calendar and the noise rules like any booking.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="income-sponsorships-grants-and-deals">
+    <h4>Sponsorships, grants, and deals</h4>
+    <p class="sub-h">Outside money the studio keeps, and outside money it pays back.</p>
+    <dl>
+      <dt>What it is</dt><dd>A brand sponsoring the room, a grant, a venue or label deal, a loan, an investor. All of it signed by the LLC and deposited in its account.</dd>
+      <dt>Price</dt><dd>Whatever the agreement says. Only money that actually lands counts as income, and only the part the studio keeps: a loan is cash in, not income, and goes back out with interest.</dd>
+      <dt>How</dt><dd>The manager tracks the strings: reporting, deliverables, spending rules. Grant money is spent as the grant says and nothing else.<br><b>The manager records it:</b> the signed agreement in the shared folder; the money tagged "sponsorship," "grant," or "deal" in the books, or "loan" as a liability, never income; grant spending tagged against the grant so the report writes itself; the referring partner's name on the entry (see <a href="agreement.html#equity-bringing-in-clients">Business</a>).</dd>
+      <dt>Who gets paid</dt><dd>The partner who brought it: 10% of sponsorships, grants, and deals; 5% of loans and investment. Ownership or cash, chosen on the ledger line when it's claimed (see <a href="agreement.html#equity-bringing-in-clients">Business</a>).</dd>
+      <dt>Rules</dt><dd>Taking a loan, giving up ownership, or signing a deal worth $2,000 or more needs a <a href="agreement.html#equity-voting-who-decides-what">vote</a>. A deal that gives anyone outside the studio a say in the room is read by the lawyer first.</dd>
+    </dl>
+  </div>
+  <div class="item" id="income-paying-out">
+    <h4>Paying out</h4>
+    <p class="sub-h">Money leaving the account. Only the manager moves it.</p>
+    <dl>
+      <dt>What</dt><dd>Rent, insurance, utilities, vendors, contractors, reimbursements, cash commissions, and distributions. Every one from the LLC's account, by the manager, with a receipt or invoice behind it.</dd>
+      <dt>How</dt>
+      <dd>
+        <ul>
+          <li><b>Bills and vendors:</b> paid from the account on their due dates, by ACH or bill pay. Nobody pays the landlord or a vendor personally (see <a href="agreement.html#entity-the-studio-is-a-limited-liability-compan">The LLC</a>).</li>
+          <li><b>Contractors:</b> a <a href="https://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" rel="noopener">W-9</a> before the first payment, paid per job or per hour by ACH, a 1099 in January if they were paid $600 or more (see <a href="agreement.html#roles-workers-who-aren-t-partners">Workers</a>).</li>
+          <li><b>Reimbursements:</b> receipt in the shared folder, marked "reimburse," paid back within 14 days of the monthly close. No receipt, no reimbursement.</li>
+          <li><b>Cash commissions:</b> paid when the client's or sponsor's money lands, as a studio expense (see <a href="agreement.html#equity-bringing-in-clients">Business</a>).</li>
+          <li><b>Distributions:</b> quarterly, by ownership share, once the reserve is at target, enough to cover everyone's tax first (see <a href="agreement.html#money-where-the-money-goes">Where does the money go?</a>).</li>
+        </ul>
+        <p style="margin:8px 0 0"><b>The manager records it:</b> every payment matched in the books to a receipt or invoice in the shared folder, tagged by what it was; contractor W-9s in the folder; reimbursements and cash commissions are expenses in the books.</p>
+      </dd>
+      <dt>Rules</dt><dd>One person moves money out: the manager. A second partner has read access to the account and sees every transaction. Any one-off payment over $200 that isn't rent or a recurring bill gets a message to the partners before it's paid, and anything $2,000 or over gets a <a href="agreement.html#equity-voting-who-decides-what">vote</a>.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="close">
+  <h2><span class="n">4</span>The monthly close</h2>
+  <p class="lead">The manager's routine, once a month on the fixed date. The <a href="agreement.html#equity-how-the-4x-2x-multiplier-actually-works">Agreement's monthly close</a> is the part where contributions become slices; this is everything around it that keeps the studio's money, gear, and calendar straight.</p>
+
+  <div class="item" id="close-the-checklist">
+    <h4>The checklist</h4>
+    <p class="sub-h">In order. About an hour once it's routine.</p>
+    <p class="closer" style="margin:0 0 8px"><b>1. Reconcile the bank.</b> Every transaction on the statement matched to a line in the books with its tag, and to an invoice or receipt in the month's shared folder. Anything unmatched gets chased now, not next month.</p>
+    <p class="closer" style="margin:0 0 8px"><b>2. Fees.</b> Who paid, who didn't. Shortfalls noted against the partner; a regular who hasn't paid has access paused on the calendar (see <a href="#income-fees">Partner fees</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>3. Clients and rentals.</b> Deposits held, balances due, overdue invoices sent a reminder. Deposits on finished rentals refunded or applied. Sales tax collected this month set aside in its own sub-account for the quarterly return (see <a href="agreement.html#nj-sales-tax-on-studio-time">Sales tax</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>4. Pay out.</b> Reimbursements and cash commissions from the month, contractors, anything else owed (see <a href="#income-paying-out">Paying out</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>5. Gear.</b> Walk the <a href="#gear-the-gear-list-and-the-loan-list">gear list</a>: everything signed out is back or has a date; new items are on the insurance schedule; broken items are tagged and in the repair queue; the low-stock list is ordered.</p>
+    <p class="closer" style="margin:0 0 8px"><b>6. Calendar.</b> Next month's bookings and events confirmed, deposits in, and the room isn't double-booked around an event.</p>
+    <p class="closer" style="margin:0 0 8px"><b>7. Contributions.</b> Approve the ledger lines and run the pie, per the Agreement (see <a href="agreement.html#equity-how-the-4x-2x-multiplier-actually-works">Monthly close</a>). Another partner approves the manager's own lines.</p>
+    <p class="closer" style="margin:0 0 8px"><b>8. Reserve and distributions.</b> Reserve balance against target. Quarter end: the tax distribution first, then anything above target by ownership share (see <a href="agreement.html#money-where-the-money-goes">Where does the money go?</a>).</p>
+    <p class="closer" style="margin:0"><b>9. Post it, and hear from everyone.</b> The month's summary goes where every partner can see it (below), partners raise anything that looks wrong or needs deciding, and the month's shared folder is closed.</p>
+  </div>
+
+  <div class="item" id="close-what-partners-do">
+    <h4>What partners do at the close</h4>
+    <p class="sub-h">The close is the one time a month everyone looks at the same page. Use it.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Before the close: get your lines in.</b> Contributions logged for the month, receipts in the shared folder marked reimburse or contribution, hours entered. Anything missed can be backfilled for three months, but the close is when it's easiest.</p>
+    <p class="closer" style="margin:0 0 8px"><b>One partner approves the manager's lines.</b> The manager can't approve their own contributions or sign off their own cash over the cap; whoever's turn it is does it at the close (see <a href="agreement.html#contrib-the-ledger">The Ledger</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>Read the posted split and say so if it's wrong.</b> A ledger line that looks off, a payment that isn't there, a percentage that doesn't add up: raise it that month. Entries older than three months are presumed settled (see <a href="agreement.html#disputes-step-1-the-ledger-settles-facts">The ledger settles facts</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>Dispute an entry.</b> A partner can flag any line at the close; if it's still disagreed after two closes it's marked disputed and stays out of the pie until it's resolved by the manager with evidence, or by a <a href="agreement.html#equity-voting-who-decides-what">vote</a>.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Call a usage review.</b> If the room is being hogged or clients can't get in, the close is the natural place to pull the <a href="#time-the-tripwire">tripwire</a>. Calling it is a right; deciding anything is a regular vote.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Bring decisions.</b> Anything on the "decisions pending" list gets talked through, and voted if it needs a vote. A partner who wants something on next month's list tells the manager before the close.</p>
+    <p class="closer" style="margin:0"><b>Flag money trouble early.</b> If next month's fee is going to be a problem, say it at the close, not on the 1st (see <a href="agreement.html#monthly-a-bad-month-is-not-a-crisis">What if I can't pay one month?</a>).</p>
+  </div>
+
+  <div class="item" id="close-what-gets-posted">
+    <h4>What gets posted</h4>
+    <p class="sub-h">One page, same layout every month.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Money.</b> Income by source, expenses by kind, the result for the month, the reserve balance against target, and anything owed in or out.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Ownership.</b> The current split after this month's close, and what changed since last month.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Room.</b> Hours booked by clients, events held, anything broken or out on loan.</p>
+    <p class="closer" style="margin:0"><b>Decisions pending.</b> Anything that needs a vote or a conversation before next close, so nobody is surprised at the meeting.</p>
+  </div>
+
+  <div class="item" id="close-dates">
+    <h4>Dates</h4>
+    <p class="closer" style="margin:0 0 8px"><b>The 1st.</b> Fees due, invoices sent.</p>
+    <p class="closer" style="margin:0 0 8px"><b>The close date.</b> A fixed day between the 5th and the 10th, <b>to be decided at the partner meeting</b> (<a href="meeting.html#meeting">agenda item 20</a>), same day every month whether or not there's much to close. Late enough that the bank statement and the fees are in, early enough that shortfalls and the posted split are out before the next 1st. If it lands on a weekend, the next business day.</p>
+    <p class="closer" style="margin:0 0 8px"><b>December and January.</b> A dry run on the chosen date: no pie, no fees, just the four records set up, the gear list walked for the insurance quote, and the one page posted with where the lease, the lawyer, and each partner's paperwork stand. If the lease starts early, the money part is real, on the stopgap company's books.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Within 14 days of the close.</b> Reimbursements paid.</p>
+    <p class="closer" style="margin:0 0 8px"><b>Quarterly.</b> New Jersey sales tax return, if the studio collects any. Tax distributions once there's profit.</p>
+    <p class="closer" style="margin:0 0 8px"><b>January.</b> 1099s to contractors paid $600 or more.</p>
+    <p class="closer" style="margin:0 0 8px"><b>March.</b> The partnership return and K-1s, with the accountant (see <a href="agreement.html#tax-paperwork">Documents</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>The formation anniversary.</b> New Jersey annual report, paid from the account.</p>
+    <p class="closer" style="margin:0"><b>Only when the bank asks.</b> The bank's ownership form names the control person, which is the manager, and anyone who owns 25% or more. It's filled in once at account opening, when the pie is zero and the manager is the only name, and then only when the bank itself asks again: usually a yearly review, or when a signer is added or a loan is taken. Nobody watches the split for this, and crossing 25% at a monthly close triggers nothing. When the bank does ask, the manager reads the split off the last close, names anyone at or above 25%, and those partners send the bank a copy of their ID and their address. It's a bank record, not a tax event, and nothing is filed with the state or the IRS.</p>
+  </div>
+</section>
+</main>
+<aside id="glossaryPane" aria-label="Glossary" tabindex="-1">
+<div class="gloss-head"><span class="gloss-handle" aria-hidden="true"></span><button type="button" class="gloss-close" id="glossClose">Close</button></div>
+<section id="glossary">
+  <h2>Glossary</h2>
+  <p class="lead">Every term this document leans on, alphabetical. Each links to where it's actually used.</p>
+  <div class="g-search"><input type="search" id="gSearch" placeholder="Glossary: search terms" aria-label="Search glossary" autocomplete="off"><span class="g-count" id="gCount"></span></div>
+  <dl class="glossary" id="gList">
+      <div class="g-row">      <dt id="g-83-b-election">83(b) election</dt><dd>A form filed with the IRS within 30 days of receiving ownership for work, so it&#x27;s taxed now at its low value instead of later. No extensions. <a class="more" href="agreement.html#tax-ownership-for-work-isn-t-taxed-until-the">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-active-partner">Active partner</dt><dd>A partner who does real work for the business, not just records in it. Active partners can deduct their share of losses against other income federally. <a class="more" href="agreement.html#tax-losses-flow-through-if-you-re-active">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-assignment-sublease-new-lease">Assignment / sublease / new lease</dt><dd>The three ways a lease can come to us from the current tenant. New lease is cleanest; assignment means inheriting their lease as-is; sublease means they stay on the hook and we&#x27;re only as secure as they are. <a class="more" href="meeting.html#sterling-getting-the-lease-it-s-currently-someone">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-basis">Basis</dt><dd>Each partner&#x27;s tax record of what they&#x27;ve put in. Contributions raise it; it&#x27;s not income and not a deduction. <a class="more" href="agreement.html#tax-deductibility">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-books">Books</dt><dd>The studio's bookkeeping: every dollar in and out of the bank account, fees, rent, bills, distributions. Kept for the accountant and for taxes. Not the ledger, which tracks contributions and ownership. The two meet only at cash contributions, which appear in both. <a class="more" href="agreement.html#money">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-breakeven">Breakeven</dt><dd>The point where the studio&#x27;s outside income covers rent and bills, keeps the reserve full, and can pay fair rates for all the work it still needs. Not the same as being slightly profitable. <a class="more" href="agreement.html#equity-the-pie-freezes-at-breakeven">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-business">Business</dt><dd>Outside money you bring to the studio: clients (15% of what they pay), sponsorships, grants, and deals (10% of what lands), or loans and investment (5% of what lands). Counted when the money arrives, as slices or as a cash finder's fee. Exchange rate 2x. <a class="more" href="agreement.html#equity-bringing-in-clients">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-buyout">Buyout</dt><dd>How a departing partner&#x27;s ownership is bought back after the freeze: 1.5x annual profit times their share, paid over 24 months, capped so it can&#x27;t starve the rent. <a class="more" href="agreement.html#leaving-after-breakeven-a-real-buyout-formula">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-calendar-is-king">Calendar is king</dt><dd>The studio-time rule: first to book has the room, partner or client, and nobody bumps anybody. <a class="more" href="#time-first-to-book-has-the-room">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-capital-call">Capital call</dt><dd>A request for partners to put in money when the studio genuinely runs short. Split by ownership share; the cash counts as a contribution. Unpaid after 90 days triggers dilution. <a class="more" href="agreement.html#equity-capital-calls">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-cash">Cash</dt><dd>Money put into the LLC, or an expense you paid personally and didn't get reimbursed for. Counted at face value, exchange rate 4x. The monthly fee is not cash in this sense; it's a payment for the room. <a class="more" href="agreement.html#contrib">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-cause">Cause</dt><dd>The short, specific list of things that justify removing a partner: theft or fraud, a capital call unpaid 90+ days after notice, conduct that gets the studio evicted or uninsurable. Using the room a lot is not cause. <a class="more" href="agreement.html#leaving-cause-is-defined-narrowly">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-certificate-of-insurance">Certificate of insurance</dt><dd>Proof of the studio&#x27;s insurance that venues and other businesses ask for before letting us load in or work with them. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-claim-on-future-profit">Claim on future profit</dt><dd>What a partner who leaves before breakeven keeps: their earned slices as a non-voting stake that pays out only if the studio becomes profitable. Not a cash payout at the door. <a class="more" href="agreement.html#leaving-before-breakeven-you-keep-a-claim-not-a-">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-client">Client</dt><dd>Books the room by the hour or per session. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-commission">Commission</dt><dd>15% of what a client pays the studio, earned by whoever brought the client in. A partner takes it as slices or as cash; a regular takes cash. <a class="more" href="agreement.html#equity-bringing-in-clients">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-contribution">Contribution</dt><dd>Anything given to the company beyond the monthly fee: cash, unreimbursed expenses, work, gear, clients, the lease guarantee. Every contribution earns slices. <a class="more" href="agreement.html#contrib">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-contribution-type">Contribution type</dt><dd>Which of the five kinds a contribution is: cash, work, gear, business, or risk. The type decides how the contribution gets its dollar value and which exchange rate applies. <a class="more" href="agreement.html#contrib-contribution-types">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-dilution">Dilution</dt><dd>When new units are issued and everyone else&#x27;s percentage goes down even though their unit count didn&#x27;t. Fair when the new person brought real value; unfair when they didn&#x27;t. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ein">EIN</dt><dd>Employer Identification Number: the LLC&#x27;s federal tax ID. Free from the IRS, needed to open the bank account. <a class="more" href="agreement.html#entity-the-studio-is-a-limited-liability-compan">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-exchange-rate">Exchange rate</dt><dd>What the multipliers amount to: one dollar of cash equals two dollars of work. Set by vote before anyone contributes; a later change applies going forward only. <a class="more" href="agreement.html#money-why-4-and-2">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-fee">Fee</dt><dd>A payment for use of the room. The monthly fee partners pay, or what a client pays per hour. Fees are income to the studio and deductible for the payer. They never earn slices. <a class="more" href="agreement.html#money-fee-money-is-never-ownership-money">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-freeze">Freeze</dt><dd>What happens once the studio can pay its own way: the ownership calculation stops, everyone&#x27;s percentage becomes fixed, and units are issued to match. After the freeze, work is paid in money. <a class="more" href="agreement.html#equity-the-pie-freezes-at-breakeven">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-gear">Gear</dt><dd>Equipment you own, either sold to the LLC for ownership (resale value, once) or lent to it for ownership (3% of resale value every month it's in the room). Lending for free is also allowed and earns nothing. Exchange rate 2x. <a class="more" href="agreement.html#contrib-gear">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-good-leaver-bad-leaver">Good leaver / bad leaver</dt><dd>A distinction this agreement mostly doesn't make. Everyone who leaves keeps every slice they earned. The only difference is removal for cause, where actual damages are deducted from the claim or buyout. <a class="more" href="agreement.html#leaving-cause-is-defined-narrowly">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-k-1">K-1</dt><dd>The yearly tax form the LLC sends each partner showing their share of profit or loss. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-lease-guarantee">Lease guarantee</dt><dd>A personal promise to the landlord to cover the rent if the LLC can&#x27;t. Whoever signs it is taking real risk, so it counts as a contribution, valued at one to three months&#x27; rent. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ledger">Ledger</dt><dd>The shared record of every contribution: date, who, what, value, slices. The whole system depends on it being kept. <a class="more" href="agreement.html#contrib-the-ledger">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-limited-liability">Limited liability</dt><dd>The legal protection an LLC gives its owners: the company&#x27;s debts and lawsuits can&#x27;t reach personal savings, as long as the company is run as a real company and nobody personally guaranteed the debt. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-llc">LLC</dt><dd>Limited liability company. The legal entity that is the studio: it signs the lease, owns the gear, holds the bank account, and keeps its problems away from anyone&#x27;s personal savings. <a class="more" href="agreement.html#entity-the-studio-is-a-limited-liability-compan">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-majority-of-units-and-two-people">Majority of units and two people</dt><dd>The voting rule for big decisions: more than half the ownership and at least two partners must agree. Stops one big owner from acting alone and one small owner from blocking alone. <a class="more" href="agreement.html#equity-voting-who-decides-what">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-manager">Manager</dt><dd>The partner who runs day to day: bills, approvals, the landlord, the monthly close. A job, not an ownership level. Can be replaced by vote. <a class="more" href="agreement.html#entity-one-person-is-the-manager">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-manager-managed">Manager-managed</dt><dd>An LLC where one named person runs operations and the owners vote only on listed big decisions. The alternative, member-managed, means everyone votes on everything. <a class="more" href="agreement.html#entity-one-person-is-the-manager">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-mediation-arbitration">Mediation / arbitration</dt><dd>The two steps before court for a deadlock: a neutral third party helps you agree (non-binding), then a private arbitrator decides (binding). Faster and cheaper than a lawsuit. <a class="more" href="agreement.html#disputes-step-4-deadlock">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-member">Member</dt><dd>New Jersey&#x27;s legal word for an owner of an LLC. In this document it only ever means that. A partner is a member; a regular is not. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-membership-interest">Membership interest</dt><dd>The legal term for owning part of an LLC, in New Jersey law and in the operating agreement. What this document calls ownership or equity, and what becomes units at the freeze. Expect the lawyer's draft to say this. <a class="more" href="agreement.html#entity-ownership-is-counted-in-units-not-percen">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-monthly-close">Monthly close</dt><dd>The manager&#x27;s monthly routine, about an hour: reconcile the bank, tag every deposit, approve hours, update the pie, post the split. <a class="more" href="agreement.html#equity-how-the-4x-2x-multiplier-actually-works">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-monthly-fee">Monthly fee</dt><dd>The flat amount every partner pays each month for unlimited use of the room. Set in a band between what everyone can reliably pay and what the access is worth, same for everyone, changed only by vote. It is not a contribution: it buys use of the room, earns no slices, and is deductible for the payer. Anything paid above it counts as a contribution unless you say otherwise. <a class="more" href="agreement.html#money-partners-pay-a-flat-monthly-rate-for-unl">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-multiplier">Multiplier</dt><dd>The weight applied to a contribution&#x27;s dollar value to turn it into slices: 4x for cash, 2x for work, gear, business, and the lease guarantee. It sets the exchange rate between cash and everything else. <a class="more" href="agreement.html#money-why-4-and-2">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-open-for-business">Open for business</dt><dd>The point where the studio is actually available to customers: a fee sheet, a way to book, a usable room, someone paying. Turns spending from startup costs into normal expenses. <a class="more" href="meeting.html#timing-december-option">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-operating-agreement">Operating agreement</dt><dd>The contract between the owners that sets the rules: ownership, money, votes, leaving. A lawyer writes it from this document. Without one, the state&#x27;s defaults apply. <a class="more" href="agreement.html#why">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ownership">Ownership</dt><dd>Your percentage of the company. Pre-freeze it's your slices out of all slices that exist, and it moves monthly. Post-freeze it's your units out of all units, and it's fixed. Same thing as equity; the legal term is membership interest. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-partner">Partner</dt><dd>Owns a piece of the studio. Pays the flat monthly fee, earns ownership for what they put in beyond it, votes on big decisions. Legally, an LLC member. Out in the world: a co-owner. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pass-through">Pass-through</dt><dd>How an LLC is taxed by default: the company pays no income tax itself; profit or loss passes to each owner&#x27;s personal return. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-permitted-use">Permitted use</dt><dd>The lease clause saying what the space may be used for. Ours must say recording studio, with 24-hour access and public sessions, in writing. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-per-owner-fee">Per-owner fee</dt><dd>New Jersey&#x27;s $150 per owner per year on partnerships with more than two owners. The studio pays it, not the partners. <a class="more" href="agreement.html#nj-150-per-owner-per-year-if-there-are-more">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-post-freeze">Post-freeze</dt><dd>The second phase. The studio's income covers rent, bills, the reserve, and fair pay for its work, so the calculation stops: percentages become units and stay fixed, work is paid in money, and ownership changes only by vote. <a class="more" href="agreement.html#slicingpie-post-freeze">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pre-emptive-rights">Pre-emptive rights</dt><dd>When new units are issued, existing partners get first crack at buying their share, so anyone who wants to hold their percentage can. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pre-freeze">Pre-freeze</dt><dd>The first phase. The studio can't yet pay for the work it needs, so it pays in ownership: contributions become slices, and percentages move every month. All of the Ownership model section is pre-freeze rules. <a class="more" href="agreement.html#slicingpie-pre-freeze">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-profits-interest">Profits interest</dt><dd>A form of ownership granted for work that&#x27;s taxed on future growth rather than on the day it&#x27;s received. The plan avoids needing it by not issuing units until the freeze. <a class="more" href="agreement.html#tax-ownership-for-work-isn-t-taxed-until-the">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-project-pricing">Project pricing</dt><dd>Valuing a piece of work with a finish line as a fixed amount agreed up front, like a contractor&#x27;s quote, instead of logging hours. Slices on completion. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-regular">Regular</dt><dd>Uses the room on a flat monthly fee but owns none of it. No slices, no vote. Can bring in clients for a cash commission. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-reserve">Reserve</dt><dd>Cash the studio keeps on hand, target two to three months of rent, before anything is distributed. What makes a bad month survivable. <a class="more" href="agreement.html#money-where-the-money-goes">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-reserved-pool">Reserved pool</dt><dd>Units set aside at the freeze for future partners, so bringing someone in doesn&#x27;t dilute anyone until the pool is used up. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-risk">Risk</dt><dd>Signing the lease guarantee: personally promising the landlord the rent if the LLC can't pay. Valued at one to three months of rent, agreed up front. Exchange rate 2x. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-section-179">Section 179</dt><dd>The federal rule letting a business write off gear in full the year it&#x27;s bought. New Jersey caps it at $25,000 a year. <a class="more" href="meeting.html#timing-gear-can-be-bought-any-year">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-self-employment-tax">Self-employment tax</dt><dd>Roughly 15% owed by active partners on their share of profit, on top of income tax. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-shotgun-clause">Shotgun clause</dt><dd>A deadlock breaker between two partners: one names a price per unit, the other must buy or sell at it. Forces an honest number. Optional. <a class="more" href="agreement.html#disputes-the-nuclear-option-a-shotgun-clause">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-slice">Slice</dt><dd>Earned through contributions in the form of cash, work, gear, business, and risk. A slice represents what you've put into the studio, measured in one unit so those five things can be compared. Slices aren't money and can't be cashed out; they only mean something relative to everyone else's. Your ownership percentage is your slices out of all slices that exist, and it moves every month. Slices only go up while you're a partner. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-slicing-pie">Slicing Pie</dt><dd>A published model for splitting a company by what people actually put in, instead of negotiating percentages up front. Everything in the Ownership model section runs on it. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-startup-costs">Startup costs</dt><dd>Everything spent before the business opens. Only $5,000 is deductible in the first year; the rest trickles out over 15 years. Everything after opening day is a normal expense. <a class="more" href="meeting.html#timing-december-option">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-sunk-costs">Sunk costs</dt><dd>Money or work spent before the LLC existed on things the studio never receives: an old space, lessons, your own records, gear that didn't come with you. Not a contribution, however much it was. Gear that's physically in the room on the start date is the one exception; it goes through the normal gear options at today's value. <a class="more" href="agreement.html#contrib-cash">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-supermajority">Supermajority</dt><dd>More than a simple majority, usually two thirds. Required here to issue units beyond the reserved pool. <a class="more" href="agreement.html#equity-voting-who-decides-what">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-sweat-equity">Sweat equity</dt><dd>Ownership earned by working for the studio: wiring, buildout, engineering for clients, booking, cleaning. Logged weekly, approved monthly, valued at the rate for that kind of work, counted at 2x. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-tripwire">Tripwire</dt><dd>Any partner&#x27;s right to call a review of studio-time usage, about the system or about one person&#x27;s use of the room. <a class="more" href="#time-the-tripwire">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-units">Units</dt><dd>The fixed pieces of ownership issued at the freeze. Your percentage is your units divided by all units issued. Easier to add a partner with than percentages. <a class="more" href="agreement.html#entity-ownership-is-counted-in-units-not-percen">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-w-9">W-9</dt><dd>The tax form a business hands over to get paid by another business. Having one in the LLC&#x27;s name is part of being fundable. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-work">Work</dt><dd>Hours for the studio logged at the rate for that kind of work, or a project priced up front. Not work on your own music. Exchange rate 2x. See sweat equity. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-worker">Worker</dt><dd>Someone paid to do a job for the studio without owning any of it: a contractor at first, an employee only once there's steady revenue. Not a partner, so no slices and no ledger line. <a class="more" href="agreement.html#roles-workers-who-aren-t-partners">See more</a></dd></div>
+  </dl>
+  <p class="g-empty" id="gEmpty" hidden>Nothing matches. Try a different word.</p>
+</section>
+
+</aside>
+<div class="gloss-backdrop" id="glossBackdrop" hidden></div>
+
+</div>
+<script>
+  const sums=[...document.querySelectorAll('nav summary a')];
+  const label=document.getElementById('mobileSection');
+
+  const dbar=document.querySelector('.deskbar'), dSec=document.getElementById('deskSection'), dItem=document.getElementById('deskItem');
+  let curSec=null, curItem=null;
+  function cleanH(h){ const c=h.cloneNode(true); c.querySelectorAll('.n,.tag').forEach(x=>x.remove()); return c.textContent.trim(); }
+  function renderBar(){
+    if(!curSec){ dbar.classList.remove('on'); return; }
+    const h2=curSec.querySelector('h2'); const n=h2.querySelector('.n');
+    const secText=cleanH(h2), numText=(n&&n.textContent)||'';
+    const itemText=(curItem && curSec.contains(curItem)) ? cleanH(curItem.querySelector('h4')) : '';
+    const dNum=document.getElementById('deskNum'), dSecText=document.getElementById('deskSecText');
+    const changed = dSecText.textContent!==secText || dItem.textContent!==itemText;
+    const apply=()=>{ dNum.textContent=numText; dSecText.textContent=secText; dSec.href='#'+curSec.id; dItem.textContent=itemText; if(itemText) dItem.href='#'+curItem.id; };
+    if(changed && dbar.classList.contains('on')){ dbar.classList.add('swap'); setTimeout(()=>{ apply(); dbar.classList.remove('swap'); },180); } else { apply(); }
+    dbar.classList.toggle('on', window.scrollY>120);
+  }
+  const subs=[...document.querySelectorAll('nav a.sub')];
+  function markSub(){ subs.forEach(a=>{ const on = !!curItem && a.getAttribute('href')==='#'+curItem.id; a.classList.toggle('current', on); if(on && window.innerWidth>900){ const nav=a.closest('nav'); const r=a.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+80||r.bottom>nr.bottom-80){ nav.scrollTo({ top: nav.scrollTop + (r.top - nr.top) - nr.height/2 + r.height/2, behavior: 'smooth' }); } } }); }
+  const allSecs=[...document.querySelectorAll('main section')], allItems=[...document.querySelectorAll('main .item')];
+  function pickCurrent(){
+    const line=Math.min(140, window.innerHeight*0.2) + 52; // just under the sticky bar
+    let sec=null; for(const x of allSecs){ if(x.getBoundingClientRect().top<=line) sec=x; else break; }
+    let item=null; if(sec){ for(const x of allItems){ if(!sec.contains(x)) continue; const r=x.getBoundingClientRect(); if(r.top<=line) item=x; else break; } if(item && item.getBoundingClientRect().bottom<=line) item=null; }
+    if(sec!==curSec || item!==curItem){ curSec=sec; curItem=item; renderBar(); markSub();
+      sums.forEach(a=>a.classList.toggle('current', !!sec && a.getAttribute('href')==='#'+sec.id));
+      if(sec&&label){ const h=sec.querySelector('h2'); if(h){ const c=h.cloneNode(true); c.querySelectorAll('.n,.tag').forEach(x=>x.remove()); label.textContent=c.textContent.trim(); } }
+    }
+  }
+  let ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(()=>{ ticking=false; pickCurrent(); }); }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  pickCurrent();
+  const dProg=document.getElementById('deskProg');
+  function progress(){ const max=document.documentElement.scrollHeight-window.innerHeight; dProg.style.width=(max>0? Math.min(100, window.scrollY/max*100):0)+'%'; }
+  window.addEventListener('scroll',()=>{ dbar.classList.toggle('on', window.scrollY>120 && !!curSec); progress(); },{passive:true});
+  progress();
+
+  const body=document.body, btn=document.getElementById('tocBtn'), nav=document.getElementById('siteNav'), closeBtn=document.getElementById('tocClose');
+  function setOpen(open){ body.classList.toggle('toc-open', open); btn.setAttribute('aria-expanded', String(open)); if(open){ nav.focus({preventScroll:true}); const cur=nav.querySelector('summary a.current'); if(cur) cur.scrollIntoView({block:'center'}); } else { btn.focus({preventScroll:true}); } }
+  btn.addEventListener('click',e=>{ e.preventDefault(); setOpen(!body.classList.contains('toc-open')); });
+  closeBtn.addEventListener('click',e=>{ e.preventDefault(); setOpen(false); });
+  nav.addEventListener('click',e=>{ const a=e.target.closest('a'); if(a && a.id!=='tocClose' && body.classList.contains('toc-open')) setOpen(false); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && body.classList.contains('toc-open')) setOpen(false); });
+
+  const gIn=document.getElementById('gSearch'), gRows=[...document.querySelectorAll('#gList .g-row')], gCount=document.getElementById('gCount'), gEmpty=document.getElementById('gEmpty');
+  gRows.forEach(r=>{ r.dataset.text=r.textContent.toLowerCase(); r.dataset.html=r.innerHTML; });
+  function gFilter(){
+    const q=gIn.value.trim().toLowerCase(); let n=0;
+    gRows.forEach(r=>{ const hit=!q || r.dataset.text.includes(q); r.classList.toggle('hide', !hit); if(hit) n++;
+      if(q && hit){ const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'); r.innerHTML=r.dataset.html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<'); } else { r.innerHTML=r.dataset.html; } });
+    gCount.textContent = q ? n+' of '+gRows.length : gRows.length+' terms';
+    gEmpty.hidden = n>0;
+  }
+  gIn.addEventListener('input', gFilter); gFilter();
+
+  // In-page links: scroll ourselves, then update the hash. Native fragment jumps proved unreliable here.
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function flashTerm(el){
+    if(!el || el.tagName!=='DT' || !el.closest('dl.glossary')) return;
+    const row=el.closest('.g-row'); if(!row) return;
+    row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
+    setTimeout(()=>row.classList.remove('flash'), 2600);
+  }
+  const gBody=document.body, gPane=document.getElementById('glossaryPane'), gBtn=document.getElementById('glossBtn'), gClose=document.getElementById('glossClose'), gBack=document.getElementById('glossBackdrop');
+  function glossOpen(open){ gBody.classList.toggle('gloss-open', open); gBtn.setAttribute('aria-expanded', String(open)); gBack.hidden=!open; if(open){ gPane.focus({preventScroll:true}); } }
+  gBtn.addEventListener('click',()=>glossOpen(!gBody.classList.contains('gloss-open')));
+  gClose.addEventListener('click',()=>glossOpen(false));
+  gBack.addEventListener('click',()=>glossOpen(false));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && gBody.classList.contains('gloss-open')) glossOpen(false); });
+  gPane.addEventListener('click', e=>{ const a=e.target.closest('a.more'); if(a && window.innerWidth<=900) glossOpen(false); });
+
+  function jumpTo(id, push){
+    const el=document.getElementById(id); if(!el) return false;
+    const pane=el.closest('#glossaryPane');
+    if(pane && window.innerWidth<=900){
+      if(gBody.classList.contains('toc-open')) setOpen(false);
+      glossOpen(true);
+      setTimeout(()=>{ const top=el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 110; pane.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' }); flashTerm(el); }, 120);
+      if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+      return true;
+    }
+    if(pane && window.innerWidth>=1500){
+      const top=el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 140;
+      pane.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' });
+      flashTerm(el);
+      if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+      return true;
+    }
+    flashTerm(el);
+    const margin=parseFloat(getComputedStyle(el).scrollMarginTop)||0;
+    const top=el.getBoundingClientRect().top + window.scrollY - margin;
+    window.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' });
+    if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+    return true;
+  }
+  document.addEventListener('click', e=>{
+    const a=e.target.closest('a[href^="#"]'); if(!a) return;
+    if(a.id==='tocBtn' || a.id==='tocClose') return;
+    const id=decodeURIComponent(a.getAttribute('href').slice(1)); if(!id) return;
+    if(jumpTo(id, true)) e.preventDefault();
+  });
+  window.addEventListener('popstate', ()=>{ if(location.hash) jumpTo(location.hash.slice(1), false); });
+  if(location.hash){ setTimeout(()=>jumpTo(location.hash.slice(1), false), 50); }
+
+  // Sidebar: the parts at the root, this part's sections inside. Follows the scroll unless the reader backed out to the root.
+  (function(){
+    const navEl=document.getElementById('siteNav'); if(!navEl) return;
+    const home=navEl.dataset.home||'root'; let manual=false;
+    function setLevel(l){ if(navEl.dataset.level!==l) navEl.dataset.level=l; }
+    function follow(){ if(manual) return; const cur=navEl.querySelector('summary a.current'); const part=cur?cur.closest('.nav-part'):null; setLevel(part?part.dataset.part:home); }
+    navEl.addEventListener('click', e=>{
+      const go=e.target.closest('[data-go]');
+      if(go){ e.preventDefault(); const to=go.dataset.go;
+              if(to==='root'){ manual=true; setLevel('root'); navEl.scrollTo({top:0}); }
+              else { manual=false; setLevel(to); window.scrollTo({top:0, behavior:'smooth'}); try{ history.pushState(null,'',location.pathname); }catch(x){} if(document.body.classList.contains('toc-open') && typeof setOpen==='function') setOpen(false); }
+              return; }
+      if(e.target.closest('a[href^="#"]')) manual=false;
+    });
+    window.addEventListener('scroll', ()=>requestAnimationFrame(()=>requestAnimationFrame(follow)), {passive:true});
+    window.addEventListener('resize', follow);
+    follow();
+  })();
+</script>
+
+</body>
+</html>

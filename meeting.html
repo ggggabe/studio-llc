@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Founding: The Agreement Manual</title>
+<style>
+  :root {
+    --paper: #F4F5F0; --paper-2: #EAECE5; --ink: #141518; --ink-2: #4B4F57; --ink-3: #8A8E97;
+    --rule: #D9DBD3; --blue: #2B4BFF; --blue-soft: #E3E8FF; --green: #1D7A4E; --green-soft: #DDF1E6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper: #121316; --paper-2: #1B1D21; --ink: #ECEDE8; --ink-2: #B4B7BE; --ink-3: #7C8089;
+            --rule: #2A2D33; --blue: #7B90FF; --blue-soft: #1E2550; --green: #5CC68E; --green-soft: #15311F; }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+         font-family: "Avenir Next", "Avenir", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+  b { font-weight: 600; }
+
+  .wrap { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+
+  nav { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 40px 20px 40px 28px; border-right: 1px solid var(--rule); background: var(--paper); }
+  nav h1 { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 10px; letter-spacing: 0; }
+  nav details { margin: 0 0 6px; }
+  nav summary { list-style: none; cursor: default; }
+  nav summary::-webkit-details-marker { display: none; }
+  nav a { display: block; color: var(--ink); font-size: 14px; line-height: 1.35; padding: 5px 8px; border-radius: 6px; }
+  nav a:hover { text-decoration: none; background: var(--paper-2); }
+  nav summary a { font-weight: 600; }
+  nav summary a.current { background: var(--blue-soft); color: var(--blue); }
+  nav a .n { display: inline-block; min-width: 22px; color: var(--blue); font-weight: 600; font-variant-numeric: tabular-nums; }
+  nav a.sub { position: relative; font-size: 13px; font-weight: 400; color: var(--ink-2); padding: 3px 8px 3px 30px; border-radius: 6px;
+              transition: color .18s ease, background-color .18s ease, transform .18s ease; }
+  nav a.sub::before { content: ""; position: absolute; left: 18px; top: 6px; bottom: 6px; width: 2px; border-radius: 2px; background: var(--blue); opacity: 0;
+                      transform: scaleY(.3); transition: opacity .18s ease, transform .22s ease; }
+  nav a.sub:hover { color: var(--ink); background: var(--paper-2); }
+  nav a.sub.current { color: var(--blue); font-weight: 600; background: var(--blue-soft); transform: translateX(2px); }
+  nav a.sub.current::before { opacity: 1; transform: scaleY(1); }
+  nav summary a { transition: color .18s ease, background-color .18s ease; }
+  @media (prefers-reduced-motion: reduce) { nav a.sub, nav a.sub::before, nav summary a { transition: none; } nav a.sub.current { transform: none; } }
+
+  main { padding: 72px 72px 120px; max-width: 920px; }
+
+  .deskbar { position: sticky; top: 0; z-index: 10; display: flex; position: -webkit-sticky; align-items: center; gap: 12px; height: 52px; margin: -72px -72px 28px; padding: 0 72px;
+             background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+             border-bottom: 1px solid var(--rule); font-size: 16px; opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+  .deskbar.on { opacity: 1; pointer-events: auto; }
+  .deskbar a { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .deskbar a:hover { color: var(--ink); text-decoration: none; }
+  .deskbar #deskSection { font-weight: 600; color: var(--ink); flex: none; display: inline-flex; align-items: center; gap: 10px; }
+  .deskbar .num { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px;
+                  background: var(--blue); color: #fff; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .deskbar .num:empty { display: none; }
+  .deskbar .prog { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--blue); transition: width .12s linear; }
+  .deskbar #deskSecText, .deskbar #deskItem { transition: opacity .18s ease, transform .18s ease; }
+  .deskbar.swap #deskSecText, .deskbar.swap #deskItem { opacity: 0; transform: translateY(4px); }
+  .deskbar .sep { width: 1px; height: 18px; background: var(--rule); flex: none; }
+  .deskbar #deskItem:empty, .deskbar #deskItem:empty + .sep { display: none; }
+  @media (prefers-reduced-motion: reduce) { .deskbar { transition: none; } }
+  header:not(.part) h1 { font-size: clamp(40px, 5vw, 60px); line-height: 1.02; letter-spacing: -0.025em; font-weight: 700; margin: 0 0 20px; max-width: 14ch; }
+  header:not(.part) > p { font-size: 17px; color: var(--ink-2); margin: 0 0 20px; max-width: 60ch; }
+
+
+  section { margin: 0; padding: 56px 0 24px; scroll-margin-top: 48px; }
+  section + section { border-top: 1px solid var(--rule); }
+  section h2 { font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 10px; display: flex; align-items: baseline; gap: 16px; }
+  section h2 .n { color: var(--blue); font-weight: 600; font-size: 18px; min-width: 28px; font-variant-numeric: tabular-nums; }
+  section > p.lead { font-size: 18px; color: var(--ink-2); margin: 0 0 36px; max-width: 60ch; }
+
+  .intro-text { max-width: 66ch; margin: 0 0 28px; }
+  .intro-text p { margin: 0 0 14px; }
+  .item { background: none; border: 0; border-radius: 0; padding: 28px 0 8px; margin: 0; border-top: 1px solid var(--rule); scroll-margin-top: 56px; }
+  .item:first-of-type { border-top: 0; padding-top: 8px; }
+  .item h4 { margin: 0 0 18px; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .item h4 .tag { margin-left: 10px; }
+  .item p.sub-h { margin: -10px 0 16px; color: var(--ink-3); font-size: 15px; }
+
+  dl { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px 20px; margin: 0; }
+  dt { color: var(--blue); font-size: 14px; font-weight: 600; padding-top: 3px; }
+  dd { margin: 0; max-width: 66ch; }
+  dd ul, dd ol { padding-left: 20px; margin: 4px 0 0; }
+  dd li { margin: 5px 0; }
+  dd ul ul { margin-top: 6px; }
+
+  .item ul.plain { list-style: none; padding: 0; margin: 0 0 14px; max-width: 66ch; }
+  .item ul.plain li { padding: 5px 0 5px 24px; position: relative; }
+  .item ul.plain li::before { content: ""; position: absolute; left: 4px; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+  .item p.closer, .item div.closer { margin: 0 0 8px; max-width: 66ch; font-weight: 400; }
+  #why-things-we-all-want p.closer { font-weight: 500; }
+  .item .more { font-weight: 600; white-space: nowrap; margin-left: 4px; }
+  dt.wide { }
+  .card-foot { display: flex; justify-content: flex-end; margin: 6px 0 4px; max-width: 66ch; }
+  .card-foot .more { font-size: 14px; font-weight: 600; margin: 0; }
+  .g-search { display: flex; align-items: center; gap: 12px; margin: 0 0 20px; max-width: 66ch; }
+  .g-search input { flex: 1; font: inherit; font-size: 16px; color: var(--ink); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; }
+  .g-search input:focus { outline: 2px solid var(--blue); outline-offset: 1px; border-color: transparent; }
+  .g-count { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  dl.glossary .g-row.hide { display: none !important; }
+  dl.glossary .g-row mark { background: var(--blue-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .g-empty { color: var(--ink-3); }
+  dl.glossary { display: block; }
+  dl.glossary .g-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 4px 24px; padding: 10px 12px; margin: 0 -12px; border-radius: 10px; }
+  dt[id] { scroll-margin-top: 60px; }
+  dl.glossary dt { color: var(--ink); font-size: 16px; font-weight: 600; scroll-margin-top: 60px; }
+  dl.glossary dd { color: var(--ink-2); }
+  dl.glossary .more { font-size: 14px; }
+  .pies { display: flex; flex-wrap: wrap; gap: 24px 48px; margin: 18px 0 8px; align-items: flex-start; }
+  .pie-fig { margin: 0; flex: 0 0 auto; width: 260px; }
+  .pie-head { display: flex; flex-direction: column; margin: 0 0 12px; }
+  .pie-month { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: .01em; }
+  .pie-total { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .pie-fig figcaption { font-size: 13px; color: var(--ink-3); margin: 12px 0 0; line-height: 1.45; }
+  .pie-fig svg { display: block; }
+  .pie-fig svg path { stroke: var(--paper); stroke-width: 3; stroke-linejoin: round; }
+  .pie-fig svg text { fill: #fff; text-anchor: middle; dominant-baseline: central; }
+  .pie-fig svg .t-pc { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .pie-fig svg .t-name { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; opacity: .95; }
+  .pie-fig svg .t-sl { font-size: 10px; font-weight: 500; opacity: .8; }
+  .pie-fig svg path.pa { fill: #3457F5; }
+  .pie-fig svg path.pb { fill: #22946A; }
+  .pie-fig svg path.pc { fill: #8457E6; }
+  @media (prefers-color-scheme: dark) {
+    .pie-fig svg path.pa { fill: #4A69FF; }
+    .pie-fig svg path.pb { fill: #2CA776; }
+    .pie-fig svg path.pc { fill: #9A72FF; }
+  }
+  .pie-demo { margin: 14px 0 4px; max-width: 66ch; }
+  .pie-row { margin: 0 0 12px; }
+  .pie-cap { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; }
+  .pie-cap span { font-weight: 400; color: var(--ink-3); }
+  .pie-bar { display: flex; height: 56px; border-radius: 8px; overflow: hidden; gap: 2px; }
+  .pie-bar > div { display: flex; flex-direction: column; justify-content: center; padding: 0 10px; min-width: 0; font-size: 12px; line-height: 1.15; color: #fff; }
+  .pie-bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+  .pie-bar em { font-style: normal; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pie-bar .pa { background: #2B4BFF; }
+  .pie-bar .pb { background: #1D7A4E; }
+  .pie-bar .pc { background: #7A3FE0; }
+  @media (prefers-color-scheme: dark) { .pie-bar .pa { background: #4C66FF; } .pie-bar .pb { background: #2E9A66; } .pie-bar .pc { background: #9B6BFF; } }
+  .pie-note { font-size: 14px; color: var(--ink-2); margin: 6px 0 0; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 999px; color: #fff; margin-right: 6px; vertical-align: 1px; }
+  .pill.p-tbd { background: transparent; color: var(--ink-2); border: 1.5px dashed var(--ink-3); padding: 1px 7px; margin-left: 6px; margin-right: 0; }
+  .pill.p-cash { background: #2B4BFF; } .pill.p-work { background: #1D7A4E; } .pill.p-gear { background: #7A3FE0; } .pill.p-business { background: #B8860B; } .pill.p-risk { background: #8B3A62; }
+  .formula { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: 10px 0 14px; padding: 12px 16px; background: var(--paper-2); border-left: 3px solid var(--blue); border-radius: 0 8px 8px 0; display: inline-block; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--paper-2); color: var(--ink-2); vertical-align: middle; }
+  .tag.ok { background: var(--green-soft); color: var(--green); }
+
+  .rule { background: var(--blue-soft); border: 0; border-left: 3px solid var(--blue); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { color: var(--ink-3); font-weight: 600; font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+
+  header.part { margin: 96px 0 0; padding: 48px 0 0; border-top: 4px solid var(--blue); }
+  header.part h1 { font-size: 40px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  header.part p { color: var(--ink-2); font-size: 18px; margin: 0 0 8px; max-width: 60ch; }
+
+  #glossaryPane { grid-column: 1 / -1; padding: 0 72px 96px; max-width: 920px; }
+  #glossaryPane section { border-top: 1px solid var(--rule); }
+  @media (min-width: 1500px) {
+    .wrap { grid-template-columns: 280px minmax(0, 1fr) 360px; }
+    #glossaryPane { grid-column: 3; grid-row: 1; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 24px 48px; max-width: none;
+                    border-left: 1px solid var(--rule); background: var(--paper); }
+    #glossaryPane section { border-top: 0; padding: 0; margin: 0; }
+    #glossaryPane h2 { display: none; }
+    #glossaryPane p.lead { display: none; }
+    #glossaryPane .g-search { position: sticky; top: 0; background: var(--paper); padding: 22px 0 14px; margin: 0 0 10px; z-index: 1; border-bottom: 1px solid var(--rule); }
+    #glossaryPane .g-search input { font-size: 14px; padding: 8px 12px; }
+    #glossaryPane dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 8px 10px; margin: 0 -10px; }
+    #glossaryPane dl.glossary dt { font-size: 14px; margin-top: 0; }
+    #glossaryPane dl.glossary dd { font-size: 13px; line-height: 1.5; }
+    #glossaryPane dl.glossary .more { font-size: 12px; }
+    main { max-width: none; }
+  }
+  .gloss-head, .gloss-backdrop { display: none; }
+  @media (max-width: 900px) {
+    .gloss-btn { margin-left: auto; }
+    .mobilebar-title { order: 2; flex: 1; }
+    .gloss-btn { order: 3; }
+    #glossaryPane { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; height: 72vh; height: 72dvh; max-width: none; padding: 0 16px 24px;
+                    background: var(--paper); border-top: 1px solid var(--rule); border-radius: 18px 18px 0 0; box-shadow: 0 -12px 40px rgba(0,0,0,.25);
+                    overflow-y: auto; transform: translateY(104%); transition: transform .28s ease; }
+    body.gloss-open #glossaryPane { transform: none; }
+    body.gloss-open { overflow: hidden; }
+    .gloss-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    body.gloss-open .gloss-backdrop { opacity: 1; pointer-events: auto; }
+    .gloss-head { display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 3; background: var(--paper); height: 48px; margin: 0 -16px; padding: 0 16px; }
+    .gloss-handle { width: 40px; height: 5px; border-radius: 3px; background: var(--rule); }
+    .gloss-close { position: absolute; right: 16px; top: 8px; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); background: var(--paper-2); border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+    #glossaryPane section { border-top: 0; padding: 0; margin: 0; }
+    #glossaryPane h2 { display: none; }
+    #glossaryPane p.lead { display: none; }
+    #glossaryPane .g-search { position: sticky; top: 48px; z-index: 2; background: var(--paper); padding: 0 0 12px; margin: 0 0 6px; border-bottom: 1px solid var(--rule); }
+    #glossaryPane dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 10px; margin: 0 -10px; }
+    #glossaryPane dl.glossary dt { font-size: 15px; margin-top: 0; }
+    #glossaryPane dl.glossary dd { font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) { #glossaryPane, .gloss-backdrop { transition: none; } }
+  }
+  dl.glossary .g-row { position: relative; transition: background-color .3s ease; }
+  dl.glossary .g-row.flash { animation: gflash 2.6s ease-out forwards; }
+  dl.glossary .g-row.flash dt { color: var(--blue); }
+  dl.glossary .g-row.flash::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--blue); animation: gbar 2.6s ease-out forwards; }
+  @keyframes gflash { 0% { background-color: color-mix(in srgb, var(--blue) 22%, transparent); } 40% { background-color: color-mix(in srgb, var(--blue) 14%, transparent); } 100% { background-color: transparent; } }
+  @keyframes gbar { 0% { transform: scaleY(0); opacity: 1; } 15% { transform: scaleY(1); opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { dl.glossary .g-row.flash { animation: none; background-color: var(--blue-soft); } dl.glossary .g-row.flash::before { animation: none; } }
+  .see { display:inline-block; margin-top:6px; font-size:14px; color: var(--ink-3); }
+  header p.pledge { font-weight: 700; font-size: 20px; color: #E8650A; margin: 4px 0 8px; }
+  @media (prefers-color-scheme: dark) { header p.pledge { color: #FF8A3D; } }
+  header .objectives { margin: 20px 0 0; max-width: 66ch; }
+  header .parts-index { margin: 32px 0 48px; max-width: 66ch; display: grid; gap: 20px; }
+  header .parts-index .part-entry p { margin: 0; }
+  header .parts-index .part-name { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0 0 4px; }
+  header .parts-index .part-entry > p:not(.part-name) { font-size: 17px; color: var(--ink-2); margin: 0 0 6px; }
+  header .parts-index a { font-size: 15px; font-weight: 600; color: var(--blue); text-decoration: none; }
+  header .parts-index a:hover { text-decoration: underline; }
+
+  header .objectives h3 { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 8px; letter-spacing: 0; text-transform: none; }
+  header .objectives ul.plain { list-style: none; padding: 0; margin: 0 0 12px; }
+  header .objectives ul.plain li { padding: 4px 0 4px 22px; position: relative; font-size: 17px; color: var(--ink); }
+  header .objectives ul.plain li::before { content: ""; position: absolute; left: 4px; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+  header .objectives p { font-size: 17px; color: var(--ink); font-weight: 500; margin: 0; }
+  .foot { color: var(--ink-3); font-size: 14px; margin-top: 56px; max-width: 60ch; }
+
+  .mobilebar, .toc-close { display: none; }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); }
+    main, .item, dd, dl { min-width: 0; }
+    .deskbar { display: none; }
+    .mobilebar { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 20; height: calc(56px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 16px 0;
+                 background: var(--paper); border-bottom: 1px solid var(--rule); }
+    .toc-btn { flex: none; text-decoration: none; display: inline-block; font: inherit; font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-soft);
+               border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+    .toc-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .mobilebar-title { min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+    .mobilebar-book { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+    .mobilebar-section { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    nav { position: fixed; inset: 0; z-index: 30; height: 100vh; height: 100dvh; padding: calc(16px + env(safe-area-inset-top)) 20px 40px; border-right: 0;
+          transform: translateY(100%); opacity: 0; visibility: hidden; transition: transform .25s ease, opacity .2s ease, visibility 0s .25s; }
+    body.toc-open nav, nav:target { transform: none; opacity: 1; visibility: visible; transition: transform .25s ease, opacity .2s ease, visibility 0s; }
+    body.toc-open { overflow: hidden; }
+    @media (prefers-reduced-motion: reduce) { nav { transition: none; } body.toc-open nav { transition: none; } }
+    .toc-close { display: block; text-decoration: none; position: sticky; top: 0; float: right; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink);
+                 background: var(--paper-2); border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; margin: 0 0 8px 12px; }
+    nav h1 { margin-top: 8px; }
+    nav a { font-size: 16px; padding: 8px 8px; }
+    nav a.sub { font-size: 14px; padding: 5px 8px 5px 30px; }
+    nav:focus, #glossaryPane:focus { outline: none; }
+    main { padding: 28px 20px 80px; }
+    section { scroll-margin-top: 72px; }
+    .item { scroll-margin-top: 68px; }
+    dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    dl.glossary .g-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    dt { margin-top: 12px; }
+        header:not(.part) h1 { font-size: 34px; }
+    section h2 { font-size: 26px; }
+    table { display: block; overflow-x: auto; }
+  }
+  @media print {
+    nav { display: none; } .wrap { display: block; } main { padding: 0; max-width: none; }
+    body { background: #fff; color: #000; } .item { break-inside: avoid; } a { color: inherit; }
+  }
+  nav .nav-root, nav .nav-part { display: none; }
+  nav[data-level="root"] .nav-root { display: block; }
+  nav[data-level="agreement"] .nav-part[data-part="agreement"], nav[data-level="ops"] .nav-part[data-part="ops"], nav[data-level="founding"] .nav-part[data-part="founding"] { display: block; }
+  nav .nav-eyebrow { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 10px; }
+  nav .nav-eyebrow a { color: inherit; text-decoration: none; }
+  nav .nav-eyebrow a:hover { color: var(--blue); }
+  nav .nav-part-btn { display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: var(--paper-2); border: 0; border-radius: 10px; padding: 12px 14px; margin: 0 0 10px; cursor: pointer; text-decoration: none; }
+  nav .nav-part-btn b { display: block; font-size: 15px; font-weight: 700; margin: 0 0 3px; }
+  nav .nav-part-btn span { display: block; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
+  nav .nav-part-btn:hover { background: var(--blue-soft); }
+  nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
+  nav .nav-back::before { content: "\2039\00a0"; }
+  header .parts-index .part-name a { color: inherit; text-decoration: none; }
+  header .parts-index .part-name a:hover { color: var(--blue); }
+  @media (max-width: 900px) { nav .nav-part-btn b { font-size: 16px; } nav .nav-part-btn span { font-size: 14px; } }
+</style>
+</head>
+<body id="top">
+<div class="wrap">
+<div class="mobilebar" role="banner">
+  <a class="toc-btn" id="tocBtn" href="#siteNav" role="button" aria-controls="siteNav" aria-expanded="false">Contents</a>
+  <button class="toc-btn gloss-btn" id="glossBtn" aria-controls="glossaryPane" aria-expanded="false">Glossary</button>
+  <div class="mobilebar-title"><span class="mobilebar-book">Founding</span><span class="mobilebar-section" id="mobileSection"></span></div>
+</div>
+<nav id="siteNav" tabindex="-1" aria-label="Contents" data-level="founding" data-home="founding">
+  <a class="toc-close" id="tocClose" href="#top" role="button" aria-label="Close contents">Close</a>
+  <div class="nav-root">
+    <p class="nav-eyebrow"><a href="index.html">Contents</a></p>
+    <a class="nav-part-btn" href="agreement.html"><b>The Agreement Manual</b><span>What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement.</span></a>
+    <a class="nav-part-btn" href="operating.html"><b>Studio operating manual</b><span>How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and the manager's instructions.</span></a>
+    <button type="button" class="nav-part-btn" data-go="founding"><b>Founding</b><span>How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies.</span></button>
+  </div>
+  <div class="nav-part" data-part="founding">
+    <button type="button" class="nav-back" data-go="root">All parts</button>
+    <h1>Founding</h1>
+  <details open><summary><a href="#meeting"><span class="n">1</span>Partner meeting</a></summary>
+    <a class="sub" href="#meeting-must-decide-at-the-meeting">Must decide at the meeting</a>
+    <a class="sub" href="#meeting-defaults-in-this-doc-change-only-if-some">Defaults in this doc, change only if someone objects</a>
+    <a class="sub" href="#meeting-logistics-five-minutes">Logistics, five minutes</a>
+    <a class="sub" href="#meeting-after-the-meeting">After the meeting</a>
+  </details>
+  <details open><summary><a href="#sterling"><span class="n">2</span>The Sterling</a></summary>
+    <a class="sub" href="#sterling-where-it-stands">Where it stands</a>
+    <a class="sub" href="#sterling-getting-the-lease-it-s-currently-someone">Getting the lease: it&#x27;s currently someone else&#x27;s</a>
+  </details>
+  <details open><summary><a href="#timing"><span class="n">3</span>Timing</a></summary>
+    <a class="sub" href="#timing-january">Everything starts in February 2027</a>
+    <a class="sub" href="#timing-december-option">If the lease has to start before February</a>
+    <a class="sub" href="#timing-what-each-partner-supplies">What each partner supplies</a>
+    <a class="sub" href="#timing-gear-can-be-bought-any-year">Gear can be bought any year</a>
+  </details>
+  <details open><summary><a href="#next"><span class="n">4</span>Next steps</a></summary>
+  </details>  </div>
+  <a class="sub" href="#glossary" style="margin-top:28px;display:block">Glossary</a>
+</nav>
+<main>
+<div class="deskbar" aria-hidden="true"><a id="deskSection" href="#"><span class="num" id="deskNum"></span><span id="deskSecText"></span></a><span class="sep"></span><a id="deskItem" href="#"></a><span class="prog" id="deskProg"></span></div>
+<header id="start">
+  <h1>Founding</h1>
+  <p>Everything above is how the studio works once it exists. This part is how we get from here to there: one meeting, the building, and who does what afterward.</p>
+</header>
+
+<section id="meeting">
+  <h2><span class="n">1</span>Partner meeting: what we need to decide</h2>
+
+  <div class="item" id="meeting-must-decide-at-the-meeting">
+    <h4>Must decide at the meeting</h4>
+    <dl>
+      <dt>1</dt><dd><b>Who's in.</b> Partner (owns a piece, pays the flat <a href="#g-monthly-fee">monthly fee</a>, votes) or regular (pays for time, no ownership). Default: anyone bringing cash, work, gear, or clients beyond the fee is a partner.<br><span class="see">See <a href="agreement.html#roles-partner">Partner</a>, <a href="agreement.html#roles-regular">Regular</a>, <a href="agreement.html#roles-can-you-be-two-things">Can you be two things?</a>.</span></dd>
+      <dt>2</dt><dd><b>The monthly fee</b> (see <a href="agreement.html#money-partners-pay-a-flat-monthly-rate-for-unl">How is the monthly fee set?</a>)<b>.</b> Two numbers, then a choice. The floor: each person says what they can reliably pay every month, and the lowest reliable number is the floor. The ceiling: what unlimited access to a room like this is actually worth, what a regular or a lockout space would charge. Then pick where in that band to sit: near the ceiling means more deduction and less ownership; near the floor means more ownership and less deduction. Same fee for everyone. Whatever's left to cover rent comes from contributions.<br><span class="see">See <a href="agreement.html#fee">The fee</a>, <a href="agreement.html#money-partners-pay-a-flat-monthly-rate-for-unl">How is the monthly fee set?</a>, <a href="agreement.html#money-if-rent-coverage-is-uneven">What if not everyone can cover the same share of rent?</a>.</span></dd>
+      <dt>3</dt><dd><b>What each person might bring beyond the fee.</b> Nothing to commit to. Contributions are logged as they happen, and the pie follows. The only hard number anyone commits to is the monthly fee. This is a rough conversation so we can size the <a href="agreement.html#contrib-cash">buildout budget</a> and know whether the gap above the fees is covered. Here's what counts, for reference:
+        <ul>
+          <li><b>Cash:</b> how much, and when. Counts at 4x.</li>
+          <li><b>Hours:</b> roughly how many per week, and what kind of work (buildout, engineering, booking, cleaning). Counts at 2x at the rate for that work.</li>
+          <li><b>Business:</b> clients, sponsorships, grants, deals, or funding you could bring in. 15% / 10% / 5% of what lands, as ownership or cash.</li>
+          <li><b><a href="agreement.html#lease-the-llc-is-the-tenant">Lease guarantee</a>:</b> whether you'd co-sign. Valued at one to three months' rent, 2x.</li>
+          <li><b>Gear:</b> list each item you'd bring, with one of three choices per item:
+            <ul>
+              <li><b><a href="agreement.html#contrib-gear">Sell it to the studio</a> for ownership.</b> The studio owns it from then on. You get <a href="agreement.html#slicingpie-slices">slices</a> once, at 2x its resale value today. If you leave, you can buy it back at that recorded value.</li>
+              <li><b>Lend it for free.</b> You keep owning it, the studio uses it, no slices. It leaves with you whenever you want. The default for personal gear and anything under about $500.</li>
+              <li><b>Lend it for ownership.</b> You keep owning it, and the studio's use earns you slices every month: 3% of resale value, at 2x. $5,000 of gear is 300 slices a month. Leaves with you if you go. For big shared pieces the studio depends on.</li>
+            </ul>
+            The manager can say no to any item (space, condition, need). Resale value is agreed, not declared.
+          </li>
+        </ul>
+      <br><span class="see">See <a href="agreement.html#contrib-what-is-a-contribution">What is a contribution</a>, <a href="agreement.html#contrib-cash">Cash</a>, <a href="agreement.html#equity-sweat-equity">Work</a>, <a href="agreement.html#contrib-gear">Gear</a>, <a href="agreement.html#equity-bringing-in-clients">Business</a>, <a href="agreement.html#contrib-risk">Risk</a>.</span></dd>
+      <dt>4</dt><dd><b>Sunk costs.</b> Proposal: everything before February 1 is a sunk cost, for everyone. The rent already paid, the hours already put in, the money already spent: none of it goes in the ledger, and the pie starts at zero on day one. The one exception is gear that's physically in the room, which goes through the normal <a href="agreement.html#contrib-gear">gear options</a> like anything a partner brings in. Objections?<br><span class="see">See <a href="agreement.html#contrib-what-is-a-contribution">Sunk costs</a>, <a href="agreement.html#contrib-gear">Gear</a>.</span></dd>
+      <dt>5</dt><dd><b>Start date.</b> Proposal: everything starts <a href="#timing-january">February 1, 2027</a>: the LLC, the lease, the membership, the ledger, the first fee. If the lease has to start earlier, there's a <a href="#timing-december-option">stopgap path for the gap</a> that costs nobody anything. Objections?<br><span class="see">See <a href="#timing-january">Everything starts in February 2027</a>, <a href="#timing-december-option">If the lease has to start before February</a>, <a href="agreement.html#entity-the-studio-is-a-limited-liability-compan">The LLC</a>.</span></dd>
+      <dt>6</dt><dd><b>Booking the studio.</b> Fully open, <a href="operating.html#time-first-to-book-has-the-room">calendar is king</a>, nobody bumps anybody. Confirm.<br><span class="see">See <a href="operating.html#time-first-to-book-has-the-room">First to book has the room</a>, <a href="operating.html#time-the-tripwire">The tripwire</a>.</span></dd>
+      <dt>7</dt><dd><b>The reserve.</b> How many months of rent the studio keeps in the bank before anything is distributed. Proposal: two to three. It's what makes a bad month survivable, and it's part of the <a href="#g-post-freeze">freeze</a> trigger, so the number matters.<br><span class="see">See <a href="agreement.html#money-where-the-money-goes">Where does the money go?</a>, <a href="agreement.html#equity-the-pie-freezes-at-breakeven">The freeze</a>, <a href="agreement.html#equity-capital-calls">What happens when the studio runs short?</a>.</span></dd>
+      <dt>8</dt><dd><b>Rates and percentages.</b> Walk the <a href="agreement.html#contrib-rates-and-percentages">table</a> in Money math once: work rates, gear rental, the three commission tiers, the guarantee value, the sign-off cap, the backfill window, the exchange rate. These are the numbers the operating agreement will carry, so every one needs a yes or a counter tonight.<br><span class="see">See <a href="agreement.html#contrib-rates-and-percentages">What are the rates and percentages?</a>, <a href="agreement.html#money-why-4-and-2">Why is the exchange rate 4 and 2?</a>, <a href="agreement.html#equity-dollar-values">Dollar values</a>.</span></dd>
+      <dt>9</dt><dd><b>Manager.</b> Who, and manager pay (proposal: none for now; the manager's hours earn slices like anyone's). The role is a job, not an ownership level, and doesn't change anyone's share. Confirm.<br><span class="see">See <a href="agreement.html#entity-one-person-is-the-manager">Manager</a>, <a href="agreement.html#equity-voting-who-decides-what">Voting</a>, <a href="agreement.html#disputes-step-3-the-manager-can-be-replaced">The manager can be replaced</a>.</span></dd>
+    </dl>
+  </div>
+
+  <div class="item" id="meeting-defaults-in-this-doc-change-only-if-some">
+    <h4>Defaults in this doc, change only if someone objects</h4>
+    <p class="closer">All of these numbers are collected in <a href="agreement.html#contrib-rates-and-percentages">Rates and percentages</a>. Walk that table once; anything nobody objects to stands.</p>
+    <dl>
+      <dt>10</dt><dd><b><a href="agreement.html#money-why-4-and-2">Exchange rate</a>:</b> cash 4x; work, gear, business, and risk 2x.</dd>
+      <dt>11</dt><dd><b>Work rates:</b> $20 to $25, $30 to $40, $40 to $75 by kind of work.</dd>
+      <dt>12</dt><dd><b>Business <a href="agreement.html#equity-bringing-in-clients">commission</a>:</b> clients 15%, sponsorships/grants/deals 10%, loans/investment 5%, no cutoff. Partners choose ownership or cash per client; non-partners get cash.</dd>
+      <dt>13</dt><dd><b>Gear:</b> lent for ownership earns 3% of resale value per month; partners borrow studio gear free, in the room and out of it; clients rent it only when it leaves the building (see <a href="operating.html#gear">Gear</a>).</dd>
+      <dt>14</dt><dd><b>Voting:</b> manager runs day to day; big decisions need a <a href="agreement.html#equity-voting-who-decides-what">majority of units</a> and at least two people; lease, sale, or dissolution needs everyone.</dd>
+      <dt>15</dt><dd><b><a href="agreement.html#leaving">Leaving</a>:</b> anyone can leave with notice and keeps every slice. Before the freeze that's a claim on future profit; after it, a buyout at 1.5x annual profit times share, paid over 24 months. Removal for cause deducts actual damages only; "cause" is a short specific list.</dd>
+      <dt>16</dt><dd><b>Caps:</b> cash contributions over $1,000 a month need <a href="agreement.html#contrib-cash">manager sign-off</a> (one other partner for the manager's own); repairs under $200 the manager just pays; gear for ownership over $2,000 needs a vote. <b>Set a buildout budget</b> (e.g. $5,000, first three months) that's pre-approved for anyone to fund.</dd>
+      <dt>17</dt><dd><b>Session pay:</b> a partner who works a paid client session logs the hours for slices pre-freeze and is paid a guaranteed payment post-freeze; the client's money is the studio's (see <a href="operating.html#income-client-sessions">Client sessions</a>).</dd>
+      <dt>18</dt><dd><b>Regular fees:</b> set by the manager on the fee sheet, usually above a partner's; a missed month pauses access (see <a href="operating.html#income-regular-fees">Regular fees</a>).</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="meeting-logistics-five-minutes">
+    <h4>Logistics, five minutes</h4>
+    <dl>
+      <dt>19</dt><dd><b>Bank.</b> Which business account (no <a href="#g-monthly-fee">monthly fee</a>, free <a href="agreement.html#money-how-payments-actually-move">Zelle</a> or ACH). Everyone pays bank to bank.</dd>
+      <dt>20</dt><dd><b><a href="agreement.html#contrib-the-ledger">Ledger</a> and <a href="operating.html#close">close date</a>.</b> A shared spreadsheet everyone can see. Decide the monthly close date: a fixed day between the 5th and the 10th, and which weeknight.</dd>
+      <dt>21</dt><dd><b>Lawyer and accountant.</b> Who finds them, rough budget. Any New Jersey business lawyer willing to write dynamic equity into an operating agreement; having seen Slicing Pie before is a plus, not a requirement. Avoid anyone who says "just pick percentages" before reading this.</dd>
+      <dt>22</dt><dd><b>Insurance.</b> Who gets quotes for general liability and property coverage; the value above which gear is scheduled individually; the certificate goes to the landlord before signing (see <a href="operating.html#gear-liability">Liability</a>).</dd>
+      <dt>23</dt><dd><b>February paperwork.</b> Operating agreement signed, insurance bound, fee sheet written, and first invoices dated in February, so the studio is <a href="#timing-january">open for business</a> on February 1.</dd>
+    </dl>
+  </div>
+
+  <div class="item" id="meeting-after-the-meeting">
+    <h4>After the meeting</h4>
+    <dl>
+      <dt>Each partner</dt><dd>Nothing owed. Start logging contributions as they happen. For any gear you bring, pick an option per item with the manager when it comes in.</dd>
+      <dt>Manager</dt><dd>Updates this doc with what was decided, opens the bank account, starts the <a href="agreement.html#contrib-the-ledger">ledger</a>, gets the insurance quotes, and lines up the lawyer and accountant so nothing in February is waiting on anyone.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="sterling">
+  <h2><span class="n">2</span>The Sterling</h2>
+  <p class="lead">The building we're trying to get. What we know, what we don't, and how the lease would actually come to us.</p>
+
+  <div class="item" id="sterling-where-it-stands">
+    <h4>Where it stands</h4>
+    <dl>
+      <dt>What</dt><dd>Rent is about $2,000 a month. There's an existing tenant on the lease. The goal is 24/7 access as a commercial studio with partners and outside clients.</dd>
+      <dt>Why</dt><dd>Everything in this doc is sized to that rent and that use. If either changes, the <a href="#g-monthly-fee">monthly fee</a> and the timing section change with it.</dd>
+      <dt>How</dt><dd>The manager is handling the conversation with the current tenant and the landlord. Partners will get the lease to read before anyone signs.</dd>
+      <dt>Specifics</dt>
+      <dd>
+        Still unknown, to be filled in:
+        <ul>
+          <li>How the lease transfers (below)</li>
+          <li>Remaining term and rent escalations</li>
+          <li>Deposit amount and who holds the current one</li>
+          <li>Whether 24-hour access, hourly clients, and partners and regulars on a flat fee are permitted</li>
+          <li>Noise and zoning</li>
+          <li>What's in the room now and who owns it</li>
+          <li>Whether the landlord requires a personal guarantee, and from whom</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="sterling-getting-the-lease-it-s-currently-someone">
+    <h4>Getting the lease: it's currently someone else's</h4>
+    <dl>
+      <dt>What</dt><dd>The Sterling is leased by a current tenant who'd be handing it over. Details aren't known yet. There are three ways a lease changes hands, and they're very different for the studio.</dd>
+      <dt>Why</dt><dd>The whole structure assumes the LLC is the tenant with the landlord. Only two of the three paths get there, and one of them means inheriting a contract we haven't read.</dd>
+      <dt>How</dt>
+      <dd>
+        <ul>
+          <li><b>A new lease.</b> The landlord ends the current tenant's lease and signs a fresh one with the LLC. Cleanest: our terms, our start date, our deposit, nothing inherited. This is what to push for.</li>
+          <li><b>An assignment.</b> The current tenant hands their existing lease to the LLC, with the landlord's written consent. The LLC steps into that lease as-is: their rent, remaining term, escalations, obligations. Fine if the lease is good. Read every page first, because we're taking whatever's in it.</li>
+          <li><b>A sublease.</b> The current tenant stays on the lease and rents the space to the LLC. Worst option. We're only as secure as they are: if they stop paying the landlord, we can be evicted even though we paid them. Most leases also require landlord consent to sublet. Avoid unless it's the only path, and then only short-term with a plan to convert.</li>
+        </ul>
+      </dd>
+      <dt>Specifics</dt>
+      <dd>
+        Questions for the current tenant, in order:
+        <ol style="padding-left:20px;margin:6px 0">
+          <li>Which of the three is this, and does the landlord know?</li>
+          <li>Can we see the lease? All of it, including amendments.</li>
+          <li>How long is left on the term, and what does rent do over it?</li>
+          <li>What happens to their security deposit, and is anything owed or damaged that we'd inherit?</li>
+          <li>Who owns the buildout and anything left in the room?</li>
+        </ol>
+        If the answer to the first question is "not sure," the next conversation is with the landlord, not the tenant. The landlord decides whether the LLC becomes the tenant.
+      </dd>
+    </dl>
+  </div>
+
+</section>
+
+<section id="timing">
+  <h2><span class="n">3</span>Timing</h2>
+  <p class="lead">The proposed start date is February 1, 2027. If the lease has to start earlier, there's a side path for the gap; everything else in this document assumes February.</p>
+
+  <div class="item" id="timing-january">
+    <h4>Everything starts in February 2027</h4>
+    <p class="sub-h">The LLC, the lease, the membership, the ledger, and the first fee all begin the same month.</p>
+    <dl>
+      <dt>What</dt><dd>The LLC is formed in the last week of January with every partner as a legal member from the first day, so that everything else can start on February 1. The lease is signed in the LLC's name, the bank account opens, the first monthly fees are invoiced, and the ledger starts logging contributions. One start date for everything.</dd>
+      <dt>Why</dt><dd>A 2027 start means no 2026 filings at all: no partnership return, no New Jersey <a href="agreement.html#nj-150-per-owner-per-year-if-there-are-more">per-owner fee</a>, nothing for the accountant to untangle. 2027 is one clean return, and every partner's name is on the paperwork from day one instead of being admitted later. February rather than January gives the lawyer and the insurance quotes room to land.</dd>
+      <dt>How</dt>
+      <dd>
+        <ul>
+          <li><b>Now:</b> the <a href="#meeting">partner meeting</a>. Everything else waits on it: the lawyer can't draft until we've agreed, and the insurer can't quote until there's a gear list and an address.</li>
+          <li><b>December:</b> hand this manual to the lawyer and ask for a draft; get insurance quotes on the address and the gear list; confirm the lease path with the landlord.</li>
+          <li><b>January:</b> the lawyer's draft reviewed and finalized; the lease read by the lawyer. In the last week, file the formation with every partner as a member, get the tax ID the same day, register with the state, and open the bank account, so the account exists before any money moves. On the bank's ownership form the manager is the control person and, with the pie at zero, the only name (see <a href="operating.html#close-dates">Dates</a> for when the bank asks again).</li>
+          <li><b>February 1:</b> bind insurance, sign the operating agreement, sign the lease as the LLC, invoice the first fees, start the <a href="agreement.html#contrib-the-ledger">ledger</a>.</li>
+          <li><b>Open fast.</b> Everything a business spends <em>before</em> it opens is a "startup cost," and only $5,000 of that is deductible in the first year; the rest trickles out over 15 years. Everything spent <em>after</em> opening is a normal expense. "Open" means available to customers: a dated fee sheet, a way to book, and a room that can record something. Keep dated copies; that's the opening date if anyone asks.</li>
+        </ul>
+      </dd>
+      <dt>Rules</dt>
+      <dd>
+        <ul>
+          <li>Forming the LLC, signing the lease, and buying gear are preparation, not opening. Partners paying for February access is.</li>
+          <li>The first K-1 covers 2027 and arrives by mid-March 2028. Nothing changes about anyone's 2026 taxes.</li>
+          <li>Everything before the start date is a <a href="agreement.html#contrib-what-is-a-contribution">sunk cost</a> (agenda item 4). The ledger's first line is dated February 1.</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="timing-december-option">
+    <h4>If the lease has to start before February</h4>
+    <p class="sub-h">Optional. A way not to waste the gap if rent starts in December or January.</p>
+    <dl>
+      <dt>What</dt><dd>The manager's existing consulting LLC takes the lease when it starts, the studio opens right away, and the studio LLC with every partner takes over on February 1. Nothing else about the plan changes.</dd>
+      <dt>Why</dt><dd>Forming the studio LLC early with everyone in it would mean a full partnership return for 2026 even for three weeks, plus the per-owner fee: roughly $2,000 of filings for one month. The consulting LLC already files, so the gap months just ride on it. Opening early also turns rent, insurance, and setup in those months into normal deductions on the manager's own return instead of capped startup costs.</dd>
+      <dt>How</dt>
+      <dd>
+        <ul>
+          <li><b>The stopgap tenant.</b> The consulting LLC already exists and can sign tomorrow. The lease says, in writing, that it will be assigned to the studio LLC on February 1 with the landlord's consent already given.</li>
+          <li><b>February 1, the handoff.</b> The lease is assigned to the studio LLC, the deposit transfers, the gear in the room goes on the gear list, and the consulting LLC is out of it.</li>
+          <li><b>Partners pay their fee for those months as customers,</b> invoiced and dated in the month. They get their deduction; the studio gets income on the books. That's also the strongest evidence the studio is open.</li>
+          <li><b>Gear that comes in during the gap</b> goes through the normal <a href="agreement.html#contrib-gear">gear options</a> on February 1, like anything else in the room. Rent, hours, and money in the gap are sunk, same as before it.</li>
+          <li><b>The manager signs a letter</b> listing what's in the room and who owns it on February 1, so nothing rests on memory.</li>
+        </ul>
+      </dd>
+      <dt>Rules</dt>
+      <dd>
+        <ul>
+          <li>Only worth doing if rent actually starts before February. If the lease starts in February, skip this card.</li>
+          <li>The consulting LLC is a stopgap only. It holds the lease and collects the gap months' fees, and nothing more: no partners join it, no studio gear is bought in its name, and the lease leaves it on February 1. That keeps its history and its consulting income out of the pie.</li>
+          <li>The legal membership starts on February 1 for everyone. Nobody loses anything by the ordering.</li>
+          <li>Any loss in the gap lands on the manager's own return (Schedule C), through the consulting LLC. Security deposit isn't deductible; rent is.</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="item" id="timing-what-each-partner-supplies">
+    <h4>What each partner supplies</h4>
+    <p class="sub-h">The manager does the filings. This is the partner's list, and it's short.</p>
+    <p class="closer" style="margin:0 0 8px"><b>In December:</b> a written list of the gear you're bringing, each item with a resale value and a couple of comps from Reverb or eBay sold listings, so the manager can get the insurance quote and agree the values.</p>
+    <p class="closer" style="margin:0 0 8px"><b>By late January:</b> a <a href="https://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" rel="noopener">W-9</a> with your legal name, address, and Social Security number, so the K-1 goes to the right person. Your email for the ledger, the calendar, and the shared folder. Your bank set up for Zelle or bill pay to the LLC.</p>
+    <p class="closer" style="margin:0 0 8px"><b>On signing day:</b> a government ID and your signature on the operating agreement. New Jersey doesn't require it to be notarized; the lawyer may want signatures witnessed anyway, which is five minutes in their office or a video call.</p>
+    <p class="closer" style="margin:0 0 8px"><b>If you own 25% or more on the day the bank asks,</b> usually at its yearly review, the manager will ask you for a copy of your ID and your address to send in. Crossing 25% at a monthly close triggers nothing by itself. Banks have to identify large owners; it's a bank record, nothing more (see <a href="operating.html#close-dates">Dates</a>).</p>
+    <p class="closer" style="margin:0 0 8px"><b>If you sign the lease guarantee,</b> the landlord may ask for a credit check or a financial statement, and may want that signature notarized. That's the only notary likely to appear.</p>
+    <p class="closer" style="margin:0"><b>Nothing else.</b> No state registration for partners, no estimated taxes pre-freeze, no 83(b) election, since no units are issued until the freeze. Your next piece of paperwork after signing is the K-1 in March 2028.</p>
+  </div>
+
+  <div class="item" id="timing-gear-can-be-bought-any-year">
+    <h4>Gear can be bought any year</h4>
+    <dl>
+      <dt>What</dt><dd>Federally, gear is fully written off in the year it's placed in service, every year. No one-time window.</dd>
+      <dt>Why</dt><dd>A February start doesn't force spending into any particular year.</dd>
+      <dt>How</dt><dd>Buy when the studio needs it.</dd>
+      <dt>Rules</dt><dd>New Jersey caps immediate write-offs at $25,000 per year. Big purchases split across two calendar years get two state caps.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="next">
+  <h2><span class="n">4</span>Next steps</h2>
+  <div class="item">
+    <dl>
+      <dt>Partners</dt><dd>Each person writes down what they're bringing beyond the monthly fee: cash, gear (with resale value), hours per week they can commit, and whether they'd sign the lease guarantee.</dd>
+      <dt>Fee</dt><dd>Set the flat monthly fee inside the band: above what everyone can reliably pay, below what the access is worth.</dd>
+      <dt>Lawyer</dt><dd>A New Jersey business lawyer to write the operating agreement from this manual. Dynamic equity is unusual but not exotic; point them at Slicing Pie if they haven't seen it.</dd>
+      <dt>Accountant</dt><dd>A New Jersey CPA before the first filing, and to confirm the sales tax question.</dd>
+      <dt>Landlord</dt><dd>Written confirmation of permitted use, 24-hour access, zoning, and who guarantees.</dd>
+      <dt id="nj-setup-costs">State filings</dt><dd>Formation $100 to $125 (the fee was cut in July 2026; some guides haven't caught up). Annual report $75. No newspaper publication requirement. Tax registration with the state within 60 days of forming, free. New Jersey doesn't follow federal bonus depreciation and caps immediate gear write-offs at $25,000 a year; the rest is depreciated on the normal schedule.</dd>
+      <dt>Insurance</dt><dd>A general liability policy in the LLC's name, plus coverage on the gear, bound before the lease is signed. The certificate of insurance is what the landlord, venues, and rental houses will ask for.</dd>
+      <dt>Certificate of insurance</dt><dd>Once the policy exists, get the certificate from the insurer and keep a current copy on file. Hand it to the landlord before signing, and to any venue, festival, or rental house that asks. Add them as additional insured when they require it.</dd>
+    </dl>
+  </div>
+  <p class="foot">Not legal or tax advice. Figures are for planning. Confirm current New Jersey fees and the sales tax treatment with the state before relying on them.</p>
+</section>
+</main>
+<aside id="glossaryPane" aria-label="Glossary" tabindex="-1">
+<div class="gloss-head"><span class="gloss-handle" aria-hidden="true"></span><button type="button" class="gloss-close" id="glossClose">Close</button></div>
+<section id="glossary">
+  <h2>Glossary</h2>
+  <p class="lead">Every term this document leans on, alphabetical. Each links to where it's actually used.</p>
+  <div class="g-search"><input type="search" id="gSearch" placeholder="Glossary: search terms" aria-label="Search glossary" autocomplete="off"><span class="g-count" id="gCount"></span></div>
+  <dl class="glossary" id="gList">
+      <div class="g-row">      <dt id="g-83-b-election">83(b) election</dt><dd>A form filed with the IRS within 30 days of receiving ownership for work, so it&#x27;s taxed now at its low value instead of later. No extensions. <a class="more" href="agreement.html#tax-ownership-for-work-isn-t-taxed-until-the">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-active-partner">Active partner</dt><dd>A partner who does real work for the business, not just records in it. Active partners can deduct their share of losses against other income federally. <a class="more" href="agreement.html#tax-losses-flow-through-if-you-re-active">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-assignment-sublease-new-lease">Assignment / sublease / new lease</dt><dd>The three ways a lease can come to us from the current tenant. New lease is cleanest; assignment means inheriting their lease as-is; sublease means they stay on the hook and we&#x27;re only as secure as they are. <a class="more" href="#sterling-getting-the-lease-it-s-currently-someone">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-basis">Basis</dt><dd>Each partner&#x27;s tax record of what they&#x27;ve put in. Contributions raise it; it&#x27;s not income and not a deduction. <a class="more" href="agreement.html#tax-deductibility">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-books">Books</dt><dd>The studio's bookkeeping: every dollar in and out of the bank account, fees, rent, bills, distributions. Kept for the accountant and for taxes. Not the ledger, which tracks contributions and ownership. The two meet only at cash contributions, which appear in both. <a class="more" href="agreement.html#money">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-breakeven">Breakeven</dt><dd>The point where the studio&#x27;s outside income covers rent and bills, keeps the reserve full, and can pay fair rates for all the work it still needs. Not the same as being slightly profitable. <a class="more" href="agreement.html#equity-the-pie-freezes-at-breakeven">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-business">Business</dt><dd>Outside money you bring to the studio: clients (15% of what they pay), sponsorships, grants, and deals (10% of what lands), or loans and investment (5% of what lands). Counted when the money arrives, as slices or as a cash finder's fee. Exchange rate 2x. <a class="more" href="agreement.html#equity-bringing-in-clients">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-buyout">Buyout</dt><dd>How a departing partner&#x27;s ownership is bought back after the freeze: 1.5x annual profit times their share, paid over 24 months, capped so it can&#x27;t starve the rent. <a class="more" href="agreement.html#leaving-after-breakeven-a-real-buyout-formula">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-calendar-is-king">Calendar is king</dt><dd>The studio-time rule: first to book has the room, partner or client, and nobody bumps anybody. <a class="more" href="operating.html#time-first-to-book-has-the-room">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-capital-call">Capital call</dt><dd>A request for partners to put in money when the studio genuinely runs short. Split by ownership share; the cash counts as a contribution. Unpaid after 90 days triggers dilution. <a class="more" href="agreement.html#equity-capital-calls">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-cash">Cash</dt><dd>Money put into the LLC, or an expense you paid personally and didn't get reimbursed for. Counted at face value, exchange rate 4x. The monthly fee is not cash in this sense; it's a payment for the room. <a class="more" href="agreement.html#contrib">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-cause">Cause</dt><dd>The short, specific list of things that justify removing a partner: theft or fraud, a capital call unpaid 90+ days after notice, conduct that gets the studio evicted or uninsurable. Using the room a lot is not cause. <a class="more" href="agreement.html#leaving-cause-is-defined-narrowly">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-certificate-of-insurance">Certificate of insurance</dt><dd>Proof of the studio&#x27;s insurance that venues and other businesses ask for before letting us load in or work with them. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-claim-on-future-profit">Claim on future profit</dt><dd>What a partner who leaves before breakeven keeps: their earned slices as a non-voting stake that pays out only if the studio becomes profitable. Not a cash payout at the door. <a class="more" href="agreement.html#leaving-before-breakeven-you-keep-a-claim-not-a-">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-client">Client</dt><dd>Books the room by the hour or per session. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-commission">Commission</dt><dd>15% of what a client pays the studio, earned by whoever brought the client in. A partner takes it as slices or as cash; a regular takes cash. <a class="more" href="agreement.html#equity-bringing-in-clients">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-contribution">Contribution</dt><dd>Anything given to the company beyond the monthly fee: cash, unreimbursed expenses, work, gear, clients, the lease guarantee. Every contribution earns slices. <a class="more" href="agreement.html#contrib">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-contribution-type">Contribution type</dt><dd>Which of the five kinds a contribution is: cash, work, gear, business, or risk. The type decides how the contribution gets its dollar value and which exchange rate applies. <a class="more" href="agreement.html#contrib-contribution-types">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-dilution">Dilution</dt><dd>When new units are issued and everyone else&#x27;s percentage goes down even though their unit count didn&#x27;t. Fair when the new person brought real value; unfair when they didn&#x27;t. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ein">EIN</dt><dd>Employer Identification Number: the LLC&#x27;s federal tax ID. Free from the IRS, needed to open the bank account. <a class="more" href="agreement.html#entity-the-studio-is-a-limited-liability-compan">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-exchange-rate">Exchange rate</dt><dd>What the multipliers amount to: one dollar of cash equals two dollars of work. Set by vote before anyone contributes; a later change applies going forward only. <a class="more" href="agreement.html#money-why-4-and-2">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-fee">Fee</dt><dd>A payment for use of the room. The monthly fee partners pay, or what a client pays per hour. Fees are income to the studio and deductible for the payer. They never earn slices. <a class="more" href="agreement.html#money-fee-money-is-never-ownership-money">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-freeze">Freeze</dt><dd>What happens once the studio can pay its own way: the ownership calculation stops, everyone&#x27;s percentage becomes fixed, and units are issued to match. After the freeze, work is paid in money. <a class="more" href="agreement.html#equity-the-pie-freezes-at-breakeven">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-gear">Gear</dt><dd>Equipment you own, either sold to the LLC for ownership (resale value, once) or lent to it for ownership (3% of resale value every month it's in the room). Lending for free is also allowed and earns nothing. Exchange rate 2x. <a class="more" href="agreement.html#contrib-gear">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-good-leaver-bad-leaver">Good leaver / bad leaver</dt><dd>A distinction this agreement mostly doesn't make. Everyone who leaves keeps every slice they earned. The only difference is removal for cause, where actual damages are deducted from the claim or buyout. <a class="more" href="agreement.html#leaving-cause-is-defined-narrowly">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-k-1">K-1</dt><dd>The yearly tax form the LLC sends each partner showing their share of profit or loss. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-lease-guarantee">Lease guarantee</dt><dd>A personal promise to the landlord to cover the rent if the LLC can&#x27;t. Whoever signs it is taking real risk, so it counts as a contribution, valued at one to three months&#x27; rent. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ledger">Ledger</dt><dd>The shared record of every contribution: date, who, what, value, slices. The whole system depends on it being kept. <a class="more" href="agreement.html#contrib-the-ledger">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-limited-liability">Limited liability</dt><dd>The legal protection an LLC gives its owners: the company&#x27;s debts and lawsuits can&#x27;t reach personal savings, as long as the company is run as a real company and nobody personally guaranteed the debt. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-llc">LLC</dt><dd>Limited liability company. The legal entity that is the studio: it signs the lease, owns the gear, holds the bank account, and keeps its problems away from anyone&#x27;s personal savings. <a class="more" href="agreement.html#entity-the-studio-is-a-limited-liability-compan">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-majority-of-units-and-two-people">Majority of units and two people</dt><dd>The voting rule for big decisions: more than half the ownership and at least two partners must agree. Stops one big owner from acting alone and one small owner from blocking alone. <a class="more" href="agreement.html#equity-voting-who-decides-what">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-manager">Manager</dt><dd>The partner who runs day to day: bills, approvals, the landlord, the monthly close. A job, not an ownership level. Can be replaced by vote. <a class="more" href="agreement.html#entity-one-person-is-the-manager">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-manager-managed">Manager-managed</dt><dd>An LLC where one named person runs operations and the owners vote only on listed big decisions. The alternative, member-managed, means everyone votes on everything. <a class="more" href="agreement.html#entity-one-person-is-the-manager">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-mediation-arbitration">Mediation / arbitration</dt><dd>The two steps before court for a deadlock: a neutral third party helps you agree (non-binding), then a private arbitrator decides (binding). Faster and cheaper than a lawsuit. <a class="more" href="agreement.html#disputes-step-4-deadlock">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-member">Member</dt><dd>New Jersey&#x27;s legal word for an owner of an LLC. In this document it only ever means that. A partner is a member; a regular is not. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-membership-interest">Membership interest</dt><dd>The legal term for owning part of an LLC, in New Jersey law and in the operating agreement. What this document calls ownership or equity, and what becomes units at the freeze. Expect the lawyer's draft to say this. <a class="more" href="agreement.html#entity-ownership-is-counted-in-units-not-percen">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-monthly-close">Monthly close</dt><dd>The manager&#x27;s monthly routine, about an hour: reconcile the bank, tag every deposit, approve hours, update the pie, post the split. <a class="more" href="agreement.html#equity-how-the-4x-2x-multiplier-actually-works">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-monthly-fee">Monthly fee</dt><dd>The flat amount every partner pays each month for unlimited use of the room. Set in a band between what everyone can reliably pay and what the access is worth, same for everyone, changed only by vote. It is not a contribution: it buys use of the room, earns no slices, and is deductible for the payer. Anything paid above it counts as a contribution unless you say otherwise. <a class="more" href="agreement.html#money-partners-pay-a-flat-monthly-rate-for-unl">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-multiplier">Multiplier</dt><dd>The weight applied to a contribution&#x27;s dollar value to turn it into slices: 4x for cash, 2x for work, gear, business, and the lease guarantee. It sets the exchange rate between cash and everything else. <a class="more" href="agreement.html#money-why-4-and-2">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-open-for-business">Open for business</dt><dd>The point where the studio is actually available to customers: a fee sheet, a way to book, a usable room, someone paying. Turns spending from startup costs into normal expenses. <a class="more" href="#timing-december-option">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-operating-agreement">Operating agreement</dt><dd>The contract between the owners that sets the rules: ownership, money, votes, leaving. A lawyer writes it from this document. Without one, the state&#x27;s defaults apply. <a class="more" href="agreement.html#why">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-ownership">Ownership</dt><dd>Your percentage of the company. Pre-freeze it's your slices out of all slices that exist, and it moves monthly. Post-freeze it's your units out of all units, and it's fixed. Same thing as equity; the legal term is membership interest. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-partner">Partner</dt><dd>Owns a piece of the studio. Pays the flat monthly fee, earns ownership for what they put in beyond it, votes on big decisions. Legally, an LLC member. Out in the world: a co-owner. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pass-through">Pass-through</dt><dd>How an LLC is taxed by default: the company pays no income tax itself; profit or loss passes to each owner&#x27;s personal return. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-permitted-use">Permitted use</dt><dd>The lease clause saying what the space may be used for. Ours must say recording studio, with 24-hour access and public sessions, in writing. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-per-owner-fee">Per-owner fee</dt><dd>New Jersey&#x27;s $150 per owner per year on partnerships with more than two owners. The studio pays it, not the partners. <a class="more" href="agreement.html#nj-150-per-owner-per-year-if-there-are-more">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-post-freeze">Post-freeze</dt><dd>The second phase. The studio's income covers rent, bills, the reserve, and fair pay for its work, so the calculation stops: percentages become units and stay fixed, work is paid in money, and ownership changes only by vote. <a class="more" href="agreement.html#slicingpie-post-freeze">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pre-emptive-rights">Pre-emptive rights</dt><dd>When new units are issued, existing partners get first crack at buying their share, so anyone who wants to hold their percentage can. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-pre-freeze">Pre-freeze</dt><dd>The first phase. The studio can't yet pay for the work it needs, so it pays in ownership: contributions become slices, and percentages move every month. All of the Ownership model section is pre-freeze rules. <a class="more" href="agreement.html#slicingpie-pre-freeze">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-profits-interest">Profits interest</dt><dd>A form of ownership granted for work that&#x27;s taxed on future growth rather than on the day it&#x27;s received. The plan avoids needing it by not issuing units until the freeze. <a class="more" href="agreement.html#tax-ownership-for-work-isn-t-taxed-until-the">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-project-pricing">Project pricing</dt><dd>Valuing a piece of work with a finish line as a fixed amount agreed up front, like a contractor&#x27;s quote, instead of logging hours. Slices on completion. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-regular">Regular</dt><dd>Uses the room on a flat monthly fee but owns none of it. No slices, no vote. Can bring in clients for a cash commission. <a class="more" href="agreement.html#roles">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-reserve">Reserve</dt><dd>Cash the studio keeps on hand, target two to three months of rent, before anything is distributed. What makes a bad month survivable. <a class="more" href="agreement.html#money-where-the-money-goes">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-reserved-pool">Reserved pool</dt><dd>Units set aside at the freeze for future partners, so bringing someone in doesn&#x27;t dilute anyone until the pool is used up. <a class="more" href="agreement.html#equity-dilution">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-risk">Risk</dt><dd>Signing the lease guarantee: personally promising the landlord the rent if the LLC can't pay. Valued at one to three months of rent, agreed up front. Exchange rate 2x. <a class="more" href="agreement.html#lease-the-llc-is-the-tenant">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-section-179">Section 179</dt><dd>The federal rule letting a business write off gear in full the year it&#x27;s bought. New Jersey caps it at $25,000 a year. <a class="more" href="#timing-gear-can-be-bought-any-year">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-self-employment-tax">Self-employment tax</dt><dd>Roughly 15% owed by active partners on their share of profit, on top of income tax. <a class="more" href="agreement.html#tax-how-tax-is-divided">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-shotgun-clause">Shotgun clause</dt><dd>A deadlock breaker between two partners: one names a price per unit, the other must buy or sell at it. Forces an honest number. Optional. <a class="more" href="agreement.html#disputes-the-nuclear-option-a-shotgun-clause">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-slice">Slice</dt><dd>Earned through contributions in the form of cash, work, gear, business, and risk. A slice represents what you've put into the studio, measured in one unit so those five things can be compared. Slices aren't money and can't be cashed out; they only mean something relative to everyone else's. Your ownership percentage is your slices out of all slices that exist, and it moves every month. Slices only go up while you're a partner. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-slicing-pie">Slicing Pie</dt><dd>A published model for splitting a company by what people actually put in, instead of negotiating percentages up front. Everything in the Ownership model section runs on it. <a class="more" href="agreement.html#slicingpie-slices">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-startup-costs">Startup costs</dt><dd>Everything spent before the business opens. Only $5,000 is deductible in the first year; the rest trickles out over 15 years. Everything after opening day is a normal expense. <a class="more" href="#timing-december-option">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-sunk-costs">Sunk costs</dt><dd>Money or work spent before the LLC existed on things the studio never receives: an old space, lessons, your own records, gear that didn't come with you. Not a contribution, however much it was. Gear that's physically in the room on the start date is the one exception; it goes through the normal gear options at today's value. <a class="more" href="agreement.html#contrib-cash">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-supermajority">Supermajority</dt><dd>More than a simple majority, usually two thirds. Required here to issue units beyond the reserved pool. <a class="more" href="agreement.html#equity-voting-who-decides-what">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-sweat-equity">Sweat equity</dt><dd>Ownership earned by working for the studio: wiring, buildout, engineering for clients, booking, cleaning. Logged weekly, approved monthly, valued at the rate for that kind of work, counted at 2x. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-tripwire">Tripwire</dt><dd>Any partner&#x27;s right to call a review of studio-time usage, about the system or about one person&#x27;s use of the room. <a class="more" href="operating.html#time-the-tripwire">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-units">Units</dt><dd>The fixed pieces of ownership issued at the freeze. Your percentage is your units divided by all units issued. Easier to add a partner with than percentages. <a class="more" href="agreement.html#entity-ownership-is-counted-in-units-not-percen">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-w-9">W-9</dt><dd>The tax form a business hands over to get paid by another business. Having one in the LLC&#x27;s name is part of being fundable. <a class="more" href="agreement.html#why-a-company">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-work">Work</dt><dd>Hours for the studio logged at the rate for that kind of work, or a project priced up front. Not work on your own music. Exchange rate 2x. See sweat equity. <a class="more" href="agreement.html#equity-sweat-equity">See more</a></dd></div>
+      <div class="g-row">      <dt id="g-worker">Worker</dt><dd>Someone paid to do a job for the studio without owning any of it: a contractor at first, an employee only once there's steady revenue. Not a partner, so no slices and no ledger line. <a class="more" href="agreement.html#roles-workers-who-aren-t-partners">See more</a></dd></div>
+  </dl>
+  <p class="g-empty" id="gEmpty" hidden>Nothing matches. Try a different word.</p>
+</section>
+
+</aside>
+<div class="gloss-backdrop" id="glossBackdrop" hidden></div>
+
+</div>
+<script>
+  const sums=[...document.querySelectorAll('nav summary a')];
+  const label=document.getElementById('mobileSection');
+
+  const dbar=document.querySelector('.deskbar'), dSec=document.getElementById('deskSection'), dItem=document.getElementById('deskItem');
+  let curSec=null, curItem=null;
+  function cleanH(h){ const c=h.cloneNode(true); c.querySelectorAll('.n,.tag').forEach(x=>x.remove()); return c.textContent.trim(); }
+  function renderBar(){
+    if(!curSec){ dbar.classList.remove('on'); return; }
+    const h2=curSec.querySelector('h2'); const n=h2.querySelector('.n');
+    const secText=cleanH(h2), numText=(n&&n.textContent)||'';
+    const itemText=(curItem && curSec.contains(curItem)) ? cleanH(curItem.querySelector('h4')) : '';
+    const dNum=document.getElementById('deskNum'), dSecText=document.getElementById('deskSecText');
+    const changed = dSecText.textContent!==secText || dItem.textContent!==itemText;
+    const apply=()=>{ dNum.textContent=numText; dSecText.textContent=secText; dSec.href='#'+curSec.id; dItem.textContent=itemText; if(itemText) dItem.href='#'+curItem.id; };
+    if(changed && dbar.classList.contains('on')){ dbar.classList.add('swap'); setTimeout(()=>{ apply(); dbar.classList.remove('swap'); },180); } else { apply(); }
+    dbar.classList.toggle('on', window.scrollY>120);
+  }
+  const subs=[...document.querySelectorAll('nav a.sub')];
+  function markSub(){ subs.forEach(a=>{ const on = !!curItem && a.getAttribute('href')==='#'+curItem.id; a.classList.toggle('current', on); if(on && window.innerWidth>900){ const nav=a.closest('nav'); const r=a.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+80||r.bottom>nr.bottom-80){ nav.scrollTo({ top: nav.scrollTop + (r.top - nr.top) - nr.height/2 + r.height/2, behavior: 'smooth' }); } } }); }
+  const allSecs=[...document.querySelectorAll('main section')], allItems=[...document.querySelectorAll('main .item')];
+  function pickCurrent(){
+    const line=Math.min(140, window.innerHeight*0.2) + 52; // just under the sticky bar
+    let sec=null; for(const x of allSecs){ if(x.getBoundingClientRect().top<=line) sec=x; else break; }
+    let item=null; if(sec){ for(const x of allItems){ if(!sec.contains(x)) continue; const r=x.getBoundingClientRect(); if(r.top<=line) item=x; else break; } if(item && item.getBoundingClientRect().bottom<=line) item=null; }
+    if(sec!==curSec || item!==curItem){ curSec=sec; curItem=item; renderBar(); markSub();
+      sums.forEach(a=>a.classList.toggle('current', !!sec && a.getAttribute('href')==='#'+sec.id));
+      if(sec&&label){ const h=sec.querySelector('h2'); if(h){ const c=h.cloneNode(true); c.querySelectorAll('.n,.tag').forEach(x=>x.remove()); label.textContent=c.textContent.trim(); } }
+    }
+  }
+  let ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(()=>{ ticking=false; pickCurrent(); }); }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  pickCurrent();
+  const dProg=document.getElementById('deskProg');
+  function progress(){ const max=document.documentElement.scrollHeight-window.innerHeight; dProg.style.width=(max>0? Math.min(100, window.scrollY/max*100):0)+'%'; }
+  window.addEventListener('scroll',()=>{ dbar.classList.toggle('on', window.scrollY>120 && !!curSec); progress(); },{passive:true});
+  progress();
+
+  const body=document.body, btn=document.getElementById('tocBtn'), nav=document.getElementById('siteNav'), closeBtn=document.getElementById('tocClose');
+  function setOpen(open){ body.classList.toggle('toc-open', open); btn.setAttribute('aria-expanded', String(open)); if(open){ nav.focus({preventScroll:true}); const cur=nav.querySelector('summary a.current'); if(cur) cur.scrollIntoView({block:'center'}); } else { btn.focus({preventScroll:true}); } }
+  btn.addEventListener('click',e=>{ e.preventDefault(); setOpen(!body.classList.contains('toc-open')); });
+  closeBtn.addEventListener('click',e=>{ e.preventDefault(); setOpen(false); });
+  nav.addEventListener('click',e=>{ const a=e.target.closest('a'); if(a && a.id!=='tocClose' && body.classList.contains('toc-open')) setOpen(false); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && body.classList.contains('toc-open')) setOpen(false); });
+
+  const gIn=document.getElementById('gSearch'), gRows=[...document.querySelectorAll('#gList .g-row')], gCount=document.getElementById('gCount'), gEmpty=document.getElementById('gEmpty');
+  gRows.forEach(r=>{ r.dataset.text=r.textContent.toLowerCase(); r.dataset.html=r.innerHTML; });
+  function gFilter(){
+    const q=gIn.value.trim().toLowerCase(); let n=0;
+    gRows.forEach(r=>{ const hit=!q || r.dataset.text.includes(q); r.classList.toggle('hide', !hit); if(hit) n++;
+      if(q && hit){ const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'); r.innerHTML=r.dataset.html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<'); } else { r.innerHTML=r.dataset.html; } });
+    gCount.textContent = q ? n+' of '+gRows.length : gRows.length+' terms';
+    gEmpty.hidden = n>0;
+  }
+  gIn.addEventListener('input', gFilter); gFilter();
+
+  // In-page links: scroll ourselves, then update the hash. Native fragment jumps proved unreliable here.
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function flashTerm(el){
+    if(!el || el.tagName!=='DT' || !el.closest('dl.glossary')) return;
+    const row=el.closest('.g-row'); if(!row) return;
+    row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
+    setTimeout(()=>row.classList.remove('flash'), 2600);
+  }
+  const gBody=document.body, gPane=document.getElementById('glossaryPane'), gBtn=document.getElementById('glossBtn'), gClose=document.getElementById('glossClose'), gBack=document.getElementById('glossBackdrop');
+  function glossOpen(open){ gBody.classList.toggle('gloss-open', open); gBtn.setAttribute('aria-expanded', String(open)); gBack.hidden=!open; if(open){ gPane.focus({preventScroll:true}); } }
+  gBtn.addEventListener('click',()=>glossOpen(!gBody.classList.contains('gloss-open')));
+  gClose.addEventListener('click',()=>glossOpen(false));
+  gBack.addEventListener('click',()=>glossOpen(false));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && gBody.classList.contains('gloss-open')) glossOpen(false); });
+  gPane.addEventListener('click', e=>{ const a=e.target.closest('a.more'); if(a && window.innerWidth<=900) glossOpen(false); });
+
+  function jumpTo(id, push){
+    const el=document.getElementById(id); if(!el) return false;
+    const pane=el.closest('#glossaryPane');
+    if(pane && window.innerWidth<=900){
+      if(gBody.classList.contains('toc-open')) setOpen(false);
+      glossOpen(true);
+      setTimeout(()=>{ const top=el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 110; pane.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' }); flashTerm(el); }, 120);
+      if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+      return true;
+    }
+    if(pane && window.innerWidth>=1500){
+      const top=el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 140;
+      pane.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' });
+      flashTerm(el);
+      if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+      return true;
+    }
+    flashTerm(el);
+    const margin=parseFloat(getComputedStyle(el).scrollMarginTop)||0;
+    const top=el.getBoundingClientRect().top + window.scrollY - margin;
+    window.scrollTo({ top, behavior: reduce ? 'instant' : 'smooth' });
+    if(push){ try{ history.pushState(null,'','#'+id); }catch(e){} }
+    return true;
+  }
+  document.addEventListener('click', e=>{
+    const a=e.target.closest('a[href^="#"]'); if(!a) return;
+    if(a.id==='tocBtn' || a.id==='tocClose') return;
+    const id=decodeURIComponent(a.getAttribute('href').slice(1)); if(!id) return;
+    if(jumpTo(id, true)) e.preventDefault();
+  });
+  window.addEventListener('popstate', ()=>{ if(location.hash) jumpTo(location.hash.slice(1), false); });
+  if(location.hash){ setTimeout(()=>jumpTo(location.hash.slice(1), false), 50); }
+
+  // Sidebar: the parts at the root, this part's sections inside. Follows the scroll unless the reader backed out to the root.
+  (function(){
+    const navEl=document.getElementById('siteNav'); if(!navEl) return;
+    const home=navEl.dataset.home||'root'; let manual=false;
+    function setLevel(l){ if(navEl.dataset.level!==l) navEl.dataset.level=l; }
+    function follow(){ if(manual) return; const cur=navEl.querySelector('summary a.current'); const part=cur?cur.closest('.nav-part'):null; setLevel(part?part.dataset.part:home); }
+    navEl.addEventListener('click', e=>{
+      const go=e.target.closest('[data-go]');
+      if(go){ e.preventDefault(); const to=go.dataset.go;
+              if(to==='root'){ manual=true; setLevel('root'); navEl.scrollTo({top:0}); }
+              else { manual=false; setLevel(to); window.scrollTo({top:0, behavior:'smooth'}); try{ history.pushState(null,'',location.pathname); }catch(x){} if(document.body.classList.contains('toc-open') && typeof setOpen==='function') setOpen(false); }
+              return; }
+      if(e.target.closest('a[href^="#"]')) manual=false;
+    });
+    window.addEventListener('scroll', ()=>requestAnimationFrame(()=>requestAnimationFrame(follow)), {passive:true});
+    window.addEventListener('resize', follow);
+    follow();
+  })();
+</script>
+
+</body>
+</html>
