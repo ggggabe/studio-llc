@@ -279,12 +279,20 @@
   nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
   nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
   nav .nav-back::before { content: "\2039\00a0"; }
-  header .parts-index .part-name a { color: inherit; text-decoration: none; }
-  header .parts-index .part-name a:hover { color: var(--blue); }
+  .landing header .objectives { margin-bottom: 8px; }
+  .landing header .parts-index { margin: 44px 0 48px; max-width: 72ch; display: grid; gap: 14px; }
+  .landing .part-card { display: grid; grid-template-columns: 36px 1fr; gap: 18px; align-items: start; padding: 22px 24px; border: 1px solid var(--rule); border-radius: 14px; background: var(--paper-2); color: inherit; text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
+  .landing .part-card:hover { border-color: var(--blue); transform: translateY(-1px); text-decoration: none; }
+  .landing .part-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .landing .part-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-top: 4px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 14px; font-weight: 700; }
+  .landing .part-title { display: block; font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin: 0 0 8px; }
+  .landing .part-desc { display: block; font-size: 17px; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+  .landing .part-meta { display: block; margin-top: 12px; font-size: 14px; font-weight: 400; color: var(--ink-3); }
+  @media (max-width: 900px) { .landing .part-card { grid-template-columns: 1fr; gap: 10px; padding: 18px 18px; } .landing .part-num { margin-top: 0; } .landing .part-title { font-size: 22px; } }
   @media (max-width: 900px) { nav .nav-part-btn b { font-size: 16px; } nav .nav-part-btn span { font-size: 14px; } }
 </style>
 </head>
-<body id="top">
+<body id="top" class="landing">
 <div class="wrap">
 <div class="mobilebar" role="banner">
   <a class="toc-btn" id="tocBtn" href="#siteNav" role="button" aria-controls="siteNav" aria-expanded="false">Contents</a>
@@ -320,21 +328,18 @@
     <p>A handshake between homies can't guarantee this. A company with rules its owners agreed to can.</p>
   </div>
   <div class="parts-index">
-    <div class="part-entry">
-      <p class="part-name"><a href="agreement.html">The Agreement Manual</a></p>
-      <p>What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement.</p>
-      <a href="agreement.html">Go to The Agreement Manual</a>
-    </div>
-    <div class="part-entry">
-      <p class="part-name"><a href="operating.html">Studio operating manual</a></p>
-      <p>How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and the manager's instructions.</p>
-      <a href="operating.html">Go to Studio operating manual</a>
-    </div>
-    <div class="part-entry">
-      <p class="part-name"><a href="meeting.html">Founding</a></p>
-      <p>How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies.</p>
-      <a href="meeting.html">Go to Founding</a>
-    </div>
+    <a class="part-card" href="agreement.html">
+      <span class="part-num">1</span>
+      <span class="part-body"><span class="part-title">The Agreement Manual</span><span class="part-desc">What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement.</span><span class="part-meta">10 sections, about 75 minutes</span></span>
+    </a>
+    <a class="part-card" href="operating.html">
+      <span class="part-num">2</span>
+      <span class="part-body"><span class="part-title">Studio operating manual</span><span class="part-desc">How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and the manager's instructions.</span><span class="part-meta">4 sections, about 20 minutes</span></span>
+    </a>
+    <a class="part-card" href="meeting.html">
+      <span class="part-num">3</span>
+      <span class="part-body"><span class="part-title">Founding</span><span class="part-desc">How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies.</span><span class="part-meta">4 sections, about 15 minutes</span></span>
+    </a>
   </div>
 </header>
 </main>

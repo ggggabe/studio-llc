@@ -39,9 +39,17 @@ PARTS = [
     ('founding', 'meeting.html', 'Founding',
      "How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies."),
 ]
-parts_index = '  <div class="parts-index">\n' + ''.join(
-    f'    <div class="part-entry">\n      <p class="part-name"><a href="{f}">{t}</a></p>\n      <p>{d}</p>\n      <a href="{f}">Go to {t}</a>\n    </div>\n'
-    for _, f, t, d in PARTS) + '  </div>\n'
+def stats(body):
+    words = len(re.findall(r"[A-Za-z0-9$%']+", re.sub(r'<[^>]+>', ' ', body)))
+    return len(re.findall(r'<section id=', body)), max(5, round(words / 230 / 5) * 5)
+PART_BODIES = {'agreement': agreement_body, 'ops': ops_body, 'founding': founding_body}
+parts_index = '  <div class="parts-index">\n'
+for n, (key, f, t, d) in enumerate(PARTS, start=1):
+    secs, mins = stats(PART_BODIES[key])
+    parts_index += (f'    <a class="part-card" href="{f}">\n      <span class="part-num">{n}</span>\n'
+                    f'      <span class="part-body"><span class="part-title">{t}</span><span class="part-desc">{d}</span>'
+                    f'<span class="part-meta">{secs} sections, about {mins} minutes</span></span>\n    </a>\n')
+parts_index += '  </div>\n'
 landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
 # agreement page header: title + description only
@@ -90,8 +98,16 @@ EXTRA_CSS = '''  nav .nav-root, nav .nav-part { display: none; }
   nav .nav-part-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
   nav .nav-back { display: block; font: inherit; font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0 0 14px; cursor: pointer; }
   nav .nav-back::before { content: "\\2039\\00a0"; }
-  header .parts-index .part-name a { color: inherit; text-decoration: none; }
-  header .parts-index .part-name a:hover { color: var(--blue); }
+  .landing header .objectives { margin-bottom: 8px; }
+  .landing header .parts-index { margin: 44px 0 48px; max-width: 72ch; display: grid; gap: 14px; }
+  .landing .part-card { display: grid; grid-template-columns: 36px 1fr; gap: 18px; align-items: start; padding: 22px 24px; border: 1px solid var(--rule); border-radius: 14px; background: var(--paper-2); color: inherit; text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
+  .landing .part-card:hover { border-color: var(--blue); transform: translateY(-1px); text-decoration: none; }
+  .landing .part-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .landing .part-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-top: 4px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 14px; font-weight: 700; }
+  .landing .part-title { display: block; font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin: 0 0 8px; }
+  .landing .part-desc { display: block; font-size: 17px; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+  .landing .part-meta { display: block; margin-top: 12px; font-size: 14px; font-weight: 400; color: var(--ink-3); }
+  @media (max-width: 900px) { .landing .part-card { grid-template-columns: 1fr; gap: 10px; padding: 18px 18px; } .landing .part-num { margin-top: 0; } .landing .part-title { font-size: 22px; } }
   @media (max-width: 900px) { nav .nav-part-btn b { font-size: 16px; } nav .nav-part-btn span { font-size: 14px; } }
 '''
 EXTRA_JS = '''
@@ -118,6 +134,7 @@ EXTRA_JS = '''
 def page(title_tag, book, current, main_inner):
     p = pre.replace('<title>The Agreement Manual</title>', f'<title>{title_tag}</title>', 1)
     p = p.replace('<span class="mobilebar-book">The Agreement Manual</span>', f'<span class="mobilebar-book">{book}</span>', 1)
+    if current is None: p = p.replace('<body id="top">', '<body id="top" class="landing">', 1)
     html = p + nav_for(current) + '\n<main>\n' + deskbar + main_inner + '\n</main>' + rest
     html = html.replace('</style>', EXTRA_CSS + '</style>', 1)
     html = html.replace('\n</script>', EXTRA_JS + '</script>', 1)
