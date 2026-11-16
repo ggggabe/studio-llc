@@ -35,7 +35,7 @@ PARTS = [
     ('agreement', 'agreement.html', 'The Agreement Manual',
      "What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement."),
     ('ops', 'operating.html', 'Studio operating manual',
-     "How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and the manager's instructions."),
+     "How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and instructions for the manager."),
     ('founding', 'meeting.html', 'Founding',
      "How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies."),
 ]
