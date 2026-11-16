@@ -50,11 +50,14 @@ for n, (key, f, t, d) in enumerate(PARTS, start=1):
                     f'      <span class="part-body"><span class="part-title">{t}</span><span class="part-desc">{d}</span>'
                     f'<span class="part-meta">{secs} sections, about {mins} minutes</span></span>\n    </a>\n')
 parts_index += '  </div>\n'
+landing_header = landing_header.replace('<h1>The Agreement Manual</h1>', '<h1>The studio as a company</h1>', 1)
 landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
 # agreement page header: title + description only
-agreement_header = ('<header id="agreement">\n  <h1>The studio as a company</h1>\n'
-                    '  <p>' + PARTS[0][3] + '</p>\n</header>')
+agreement_header = ('<header id="agreement">\n  <h1>The Agreement Manual</h1>\n'
+                    '  <p>' + PARTS[0][3] + '</p>\n'
+                    '  <p class="pledge">Every word in here needs to be something we all agree to.</p>\n'
+                    '  <p>This manual is what we agree to. We use it to create the operating agreement, which a lawyer reviews before we sign. Nothing goes in there that isn\'t in here.</p>\n</header>')
 
 # ---- nav groups --------------------------------------------------------------
 close_link = re.search(r'\s*<a class="toc-close"[^>]*>Close</a>\n', nav).group(0)
