@@ -59,9 +59,8 @@ landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
 # agreement page header: title + description only
 agreement_header = ('<header id="agreement">\n  <h1>The Agreement Manual</h1>\n'
-                    '  <p>' + PARTS[0][3] + '</p>\n'
                     '  <p class="pledge">Every word in here needs to be something we all agree to.</p>\n'
-                    '  <p>This manual is what we agree to. We use it to create the operating agreement, which a lawyer reviews before we sign. Nothing goes in there that isn\'t in here.</p>\n</header>')
+                    '  <p>What the studio is, who\'s in it, and how ownership, contributions, taxes, money, decisions, and leaving actually work.</p>\n</header>')
 
 # ---- nav groups --------------------------------------------------------------
 close_link = re.search(r'\s*<a class="toc-close"[^>]*>Close</a>\n', nav).group(0)
