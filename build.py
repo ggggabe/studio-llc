@@ -52,6 +52,7 @@ for n, (key, f, t, d) in enumerate(PARTS, start=1):
                     f'<span class="part-meta">{secs} sections, about {mins} minutes</span></span>\n    </a>\n')
 parts_index += '  </div>\n'
 landing_header = landing_header.replace('<h1>The Agreement Manual</h1>', '<h1>The studio as a company</h1>', 1)
+landing_header = re.sub(r'  <p>What the studio is, who\'s in it, and how ownership[^<]*</p>\n', '', landing_header, count=1)
 landing_header = landing_header.replace('  <p class="pledge">Every word in here needs to be something we all agree to.</p>\n', '', 1)
 landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
