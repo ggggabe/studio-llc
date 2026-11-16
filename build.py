@@ -4,7 +4,7 @@
 Writes four pages:
   index.html      the landing page: title, pledge, objectives, and the three parts
   agreement.html  The Agreement Manual
-  operating.html  Studio operating manual
+  operating.html  Studio Operating Manual
   meeting.html    Founding (partner meeting, the building, timing, next steps)
 Every page carries the sidebar (parts at the root, sections inside the current part) and the glossary.
 Links to anchors on another page are rewritten to page.html#id.
@@ -34,7 +34,7 @@ landing_header = re.sub(r'  <div class="parts-index">.*?\n  </div>\n', '', landi
 PARTS = [
     ('agreement', 'agreement.html', 'The Agreement Manual',
      "What the studio is, who's in it, and how ownership, contributions, taxes, money, decisions, and leaving work. The spec for the operating agreement."),
-    ('ops', 'operating.html', 'Studio operating manual',
+    ('ops', 'operating.html', 'Studio Operating Manual',
      "How we run the place day to day: the room, the gear, moving money, and the monthly close. House rules, and instructions for the manager."),
     ('founding', 'meeting.html', 'Founding',
      "How we get from here to there: the partner meeting, the building, the timing, and what each partner supplies."),
@@ -53,7 +53,7 @@ for n, (key, f, t, d) in enumerate(PARTS, start=1):
 parts_index += '  </div>\n'
 landing_header = landing_header.replace('<h1>The Agreement Manual</h1>', '<h1>How to studio</h1>', 1)
 landing_header = re.sub(r'  <p>What the studio is, who\'s in it, and how ownership[^<]*</p>\n', '', landing_header, count=1)
-landing_header = re.sub(r'  <p>This manual is what we agree to\.[^<]*</p>\n', '  <p>Everything about running the studio as a company, in three parts: what we agree to as owners, how the room runs day to day, and how we get it open. Read and understand as much as you can of The Agreement Manual and the Studio operating manual before the meeting.</p>\n', landing_header, count=1)
+landing_header = re.sub(r'  <p>This manual is what we agree to\.[^<]*</p>\n', '  <p>Everything about running the studio as a company, in three parts: what we agree to as owners, how the room runs day to day, and how we get it open. Read and understand as much as you can of The Agreement Manual and the Studio Operating Manual before the meeting.</p>\n', landing_header, count=1)
 landing_header = landing_header.replace('  <p class="pledge">Every word in here needs to be something we all agree to.</p>\n', '', 1)
 landing_header = landing_header.replace('</header>', parts_index + '</header>')
 
@@ -150,7 +150,7 @@ def page(title_tag, book, current, main_inner):
 pages = {
     'index.html': page('The Agreement Manual', 'The Agreement Manual', None, landing_header),
     'agreement.html': page('The Agreement Manual', 'The Agreement Manual', 'agreement', agreement_header + '\n\n' + agreement_body),
-    'operating.html': page('Studio operating manual', 'Studio operating manual', 'ops', ops_body),
+    'operating.html': page('Studio Operating Manual', 'Studio Operating Manual', 'ops', ops_body),
     'meeting.html': page('Founding: The Agreement Manual', 'Founding', 'founding', founding_body),
 }
 
